@@ -1,16 +1,22 @@
 import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
-import { router, useLocalSearchParams, usePathname } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import icons from '@/constants/icons';
 import { useDebouncedCallback } from 'use-debounce';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { fetchProducts } from '@/redux/features/product/productSlice';
 
 const Search = () => {
-    const path = usePathname();
-    const params = useLocalSearchParams<{ query?: string }>();
-    const [search, setSearch] = useState(params.query);
-  
+    const params = useLocalSearchParams<{ query?: string; category?: string }>();
+    const [search, setSearch] = useState(params.query||'');
+    const dispatch = useDispatch<AppDispatch>();
+    const [selectedCategory, setSelectedCategory] = useState(params.category || '');
+
     const debouncedSearch = useDebouncedCallback((text: string) => {
-      router.setParams({ query: text });
+      router.setParams({ query: text,  category: selectedCategory });
+      dispatch(fetchProducts({ search: text, category: selectedCategory }));
+
     }, 500);
   
     const handleSearch = (text: string) => {

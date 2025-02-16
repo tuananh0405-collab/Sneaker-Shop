@@ -5,11 +5,10 @@ import Search from "@/components/Search";
 import icons from "@/constants/icons";
 import { fetchProducts } from "@/redux/features/product/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
-import { Link, router, useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
+import {  router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Button,
   FlatList,
   Image,
   Text,
@@ -28,20 +27,16 @@ const Home = () => {
   const { products, loading, error } = useSelector(
     (state: RootState) => state.product
   );
+  const [filters, setFilters] = useState({ search: params.query || '', category: params.filter || '' });
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(fetchProducts(filters));
   }, [dispatch]);
 
-  
-  console.log("====================================");
-  console.log(products?.data?.products);
-  console.log("====================================");
   return (
     <SafeAreaView className="h-full bg-white">
-      <TouchableOpacity onPress={() => handleCardPress("67adedc00c2040d4e55a98a2")}><Text className="text-blue-600">asfsdf</Text></TouchableOpacity>
       <FlatList
-        data={products?.data?.products}
+        data={products}
         numColumns={2}
         renderItem={({ item }) => (
           <Card item={item} onPress={() => handleCardPress(item._id)} />

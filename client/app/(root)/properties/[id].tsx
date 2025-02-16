@@ -30,7 +30,7 @@ const Property = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchProductDetails("67adedc00c2040d4e55a98a2")); // Fetch chi tiết sản phẩm khi component mount
+    dispatch(fetchProductDetails("67adedc00c2040d4e55a98a2")); 
   }, [dispatch, id]);
   console.log('====================================');
   console.log(productDetails?.data?.product.collections);
@@ -82,13 +82,13 @@ const Property = () => {
 
         <View className="px-5 mt-7 flex gap-2">
           <Text className="text-2xl font-rubik-extrabold">
-            {productDetails?.data.product.name}
+            {productDetails?.data?.product?.name}
           </Text>
 
           <View className="flex flex-row items-center gap-3">
             <View className="flex flex-row items-center px-4 py-2 bg-primary-100 rounded-full">
               <Text className="text-xs font-rubik-bold text-primary-300">
-                {productDetails?.data.product.collections}
+                {productDetails?.data?.product?.collections}
               </Text>
             </View>
 
@@ -129,7 +129,7 @@ const Property = () => {
             <View className="flex flex-row items-center justify-between mt-4">
               <View className="flex flex-row items-center">
                 <Image
-                  source={{ uri:productDetails?.data.product.images[0].url}}
+                  source={{ uri:productDetails?.data?.product?.images[0]?.url}}
                   className="size-14 rounded-full"
                 />
 
@@ -271,7 +271,7 @@ const Property = () => {
               numberOfLines={1}
               className="text-primary-300 text-start text-2xl font-rubik-bold"
             >
-              ${productDetails?.data.product.price}
+              ${productDetails?.data?.product?.price}
             </Text>
           </View>
 

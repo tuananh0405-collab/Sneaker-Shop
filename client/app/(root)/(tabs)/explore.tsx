@@ -1,21 +1,39 @@
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Image } from 'react-native'
-import React, { useEffect } from 'react'
-import { router, useLocalSearchParams } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card } from '@/components/Cards';
-import NoResults from '@/components/NoResults';
-import icons from '@/constants/icons';
-import Search from '@/components/Search';
-import Filters from '@/components/Filters';
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Card } from "@/components/Cards";
+import NoResults from "@/components/NoResults";
+import icons from "@/constants/icons";
+import Search from "@/components/Search";
+import Filters from "@/components/Filters";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { fetchProducts } from "@/redux/features/product/productSlice";
 
 const Explore = () => {
- 
   const handleCardPress = (id: string) => router.push(`/properties/${id}`);
+  const dispatch = useDispatch<AppDispatch>();
+  const { products, loading, error } = useSelector(
+    (state: RootState) => state.product
+  );
+  const params = useLocalSearchParams<{ query?: string; filter?: string }>();
+  const [filters, setFilters] = useState({ search: params.query || '', category: params.filter || '' });
 
+  useEffect(() => {
+    dispatch(fetchProducts(filters));
+  }, [dispatch]);
   return (
     <SafeAreaView className="h-full bg-white">
       <FlatList
-        data={[1,2.3]}
+        data={products}
         numColumns={2}
         renderItem={({ item }) => (
           <Card item={item} onPress={() => handleCardPress(item._id)} />
@@ -53,7 +71,7 @@ const Explore = () => {
               <Filters />
 
               <Text className="text-xl font-rubik-bold text-black-300 mt-5">
-                Found 
+                Found {products.length} results
               </Text>
             </View>
           </View>

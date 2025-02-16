@@ -25,4 +25,20 @@ export interface Image {
     email: string;
     token: string;
   }
+  export interface Category {
+    _id: string;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+  }
+  export interface User {
+    _id: string;
+    name: string;
+    email: string;
+    password?: string;
+    role: 'user' | 'admin' | 'sale-staff';
+    phone: string;
+    createdAt: string;
+    updatedAt: string;
+  }
   

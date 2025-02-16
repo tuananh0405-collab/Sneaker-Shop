@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
-import { Models } from "react-native-appwrite";
 import { Product } from "@/interface";
 
 interface Props {
@@ -10,12 +9,7 @@ interface Props {
   onPress?: () => void;
 }
 
-
-
 export const FeaturedCard = ({ item, onPress }: Props) => {
-  console.log('====================================');
-  console.log("Card ", item);
-  console.log('====================================');
   return (
     <TouchableOpacity
       onPress={onPress}

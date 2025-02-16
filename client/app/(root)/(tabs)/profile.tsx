@@ -11,10 +11,11 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "@/constants/icons";
 import { settings } from "@/constants/data";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { useRouter } from "expo-router";
 import { logoutUser } from "@/redux/features/auth/authSlice";
+import avatar from "@/assets/images/avatar.jpg"
 
 interface SettingsItemProp {
   icon: ImageSourcePropType;
@@ -48,39 +49,46 @@ const SettingsItem = ({
 
 const Profile = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const userInfo = useSelector((state: RootState) => state.auth.user);
   const router = useRouter();
-
+ 
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser()).unwrap();
-      router.replace("/sign-in"); // Redirect to login after logout
+      router.replace("/sign-in");
     } catch (error) {
       Alert.alert("Logout Failed");
     }
-  };  return (
+  };
+
+  return (
     <SafeAreaView className="h-full bg-white">
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerClassName="pb-32 px-7"
       >
         <View className="flex flex-row items-center justify-between mt-5">
-          <Text className="text-xl font-rubik-bold">Profile</Text>
+          <Text className="text-xl font-rubik-bold">
+            Profile 
+          </Text>
           <Image source={icons.bell} className="size-5" />
         </View>
 
-        {/* <View className="flex flex-row justify-center mt-5">
+        <View className="flex flex-row justify-center mt-5">
           <View className="flex flex-col items-center relative mt-5">
             <Image
-              source={{ uri: user?.avatar }}
+              source={avatar}
               className="size-44 relative rounded-full"
             />
             <TouchableOpacity className="absolute bottom-11 right-2">
               <Image source={icons.edit} className="size-9" />
             </TouchableOpacity>
 
-            <Text className="text-2xl font-rubik-bold mt-2">{user?.name}</Text>
+            <Text className="text-2xl font-rubik-bold mt-2">
+              {userInfo?.data?.user?.name}
+            </Text>
           </View>
-        </View> */}
+        </View>
 
         <View className="flex flex-col mt-10">
           <SettingsItem icon={icons.calendar} title="My Orders" />
