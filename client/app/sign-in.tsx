@@ -21,7 +21,6 @@ import { loginWithEmail } from "@/redux/features/auth/authSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 
 const SignIn = () => {
-
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
@@ -48,6 +47,8 @@ const SignIn = () => {
     }
   };
 
+  const handleLogin = () => {};
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -55,7 +56,7 @@ const SignIn = () => {
       <SafeAreaView className="bg-white h-full">
         <ScrollView contentContainerClassName="h-full">
           <Image
-            source={images.onboarding}
+            source={images.larmbo}
             className="w-full h-3/6"
             resizeMode="contain"
           />
@@ -97,24 +98,42 @@ const SignIn = () => {
               </TouchableOpacity>
             </View>
 
-            {/* <Text className="text-lg font-rubik text-black-200 text-center mt-12">
-            Login to MMA with Google
-          </Text>
-          <TouchableOpacity
-            onPress={handleLogin}
-            className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5"
-          >
-            <View className="flex flex-row items-center justify-center">
-              <Image
-                source={icons.google}
-                className="w-5 h-5"
-                resizeMode="contain"
-              />
-              <Text className="text-lg font-rubik-medium text-black-300 ml-2">
-                Continue with Google
+            <View className={"flex-row items-center my-6"}>
+              <View className={"flex-1 border-b border-gray-400"} />
+              <Text className={"mx-4 text-lg text-gray-600 font-rubik"}>
+                Or Continue with
               </Text>
+              <View className={"flex-1 border-b border-gray-400"} />
             </View>
-          </TouchableOpacity> */}
+            <View className="flex flex-row justify-center mt-2">
+              <TouchableOpacity
+                onPress={handleLogin}
+                className="bg-white shadow-md shadow-zinc-300 rounded-full w-1/2 py-4 mx-2 flex-row items-center justify-center"
+              >
+                <Image
+                  source={icons.google}
+                  className="w-6 h-6"
+                  resizeMode="contain"
+                />
+                <Text className="text-lg font-rubik-medium text-black-300 ml-2">
+                  Google
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={handleLogin}
+                className="bg-white shadow-md shadow-zinc-300 rounded-full w-1/2 py-4 mx-2 flex-row items-center justify-center"
+              >
+                <Image
+                  source={icons.facebook}
+                  className="w-9 h-9"
+                  resizeMode="contain"
+                />
+                <Text className="text-lg font-rubik-medium text-black-300 ml-2">
+                  Facebook
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>

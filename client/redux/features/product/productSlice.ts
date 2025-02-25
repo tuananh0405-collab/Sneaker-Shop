@@ -23,6 +23,9 @@ export const fetchProducts = createAsyncThunk<Product[], Record<string, any>>(
     const queryParams = new URLSearchParams(filters).toString();
     const response = await fetch(`${API_BASE_URL}?${queryParams}`);
     const data = await response.json();
+    console.log('====================================');
+    console.log(queryParams);
+    console.log('====================================');
     return data.data.products;
   }
 );

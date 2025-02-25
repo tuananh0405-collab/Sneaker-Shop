@@ -5,7 +5,7 @@ import Search from "@/components/Search";
 import icons from "@/constants/icons";
 import { fetchProducts } from "@/redux/features/product/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
-import {  router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -17,21 +17,30 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
+import avatar from "@/assets/images/avatar.jpg";
+
+
 
 const Home = () => {
-  const params = useLocalSearchParams<{ query?: string; filter?: string }>();
+  const params = useLocalSearchParams<{ search?: string; category?: string }>();
 
   const handleCardPress = (id: string) => router.push(`/properties/${id}`);
+  const handleSeeAll = () => router.push("/explore");
 
   const dispatch = useDispatch<AppDispatch>();
   const { products, loading, error } = useSelector(
     (state: RootState) => state.product
   );
-  const [filters, setFilters] = useState({ search: params.query || '', category: params.filter || '' });
+  const userInfo = useSelector((state: RootState) => state.auth.user);
+
+  const [filters, setFilters] = useState({
+    search: params.search || "",
+    category: params.category || "",
+  });
 
   useEffect(() => {
     dispatch(fetchProducts(filters));
-  }, [dispatch]);
+  }, [dispatch, filters]);
 
   return (
     <SafeAreaView className="h-full bg-white">
@@ -56,18 +65,24 @@ const Home = () => {
           <View className="px-5">
             <View className="flex flex-row items-center justify-between mt-5">
               <View className="flex flex-row">
-                {/* <Image
-                  source={{ uri: user?.avatar }}
-                  className="size-12 rounded-full"
-                /> */}
+                <Image
+                  source={avatar}
+                  // className="h-10 w-10 rounded-full border border-gray-300"
+                  style={{
+                    height: 40, // Adjust the size
+                    width: 40, // Adjust the size
+                    borderRadius: 20, // Round the image fully
+                    borderWidth: 1, // Optional: add a border around the image
+                    borderColor: "#E0E0E0", // Optional: set the border color
+                  }}
+                />
 
                 <View className="flex flex-col items-start ml-2 justify-center">
                   <Text className="text-xs font-rubik text-black-100">
                     Good Morning
                   </Text>
                   <Text className="text-base font-rubik-medium text-black-300">
-                    {/* {user?.name} */}
-                    name
+                    {userInfo?.data?.user.name}
                   </Text>
                 </View>
               </View>
@@ -82,7 +97,10 @@ const Home = () => {
                   Featured
                 </Text>
                 <TouchableOpacity>
-                  <Text className="text-base font-rubik-bold text-primary-300">
+                  <Text
+                    className="text-base font-rubik-bold text-primary-300"
+                    onPress={handleSeeAll}
+                  >
                     See all
                   </Text>
                 </TouchableOpacity>
@@ -116,7 +134,10 @@ const Home = () => {
                   Our Recommendation
                 </Text>
                 <TouchableOpacity>
-                  <Text className="text-base font-rubik-bold text-primary-300">
+                  <Text
+                    className="text-base font-rubik-bold text-primary-300"
+                    onPress={handleSeeAll}
+                  >
                     See all
                   </Text>
                 </TouchableOpacity>
@@ -127,7 +148,6 @@ const Home = () => {
           </View>
         )}
       />
-      
     </SafeAreaView>
   );
 };

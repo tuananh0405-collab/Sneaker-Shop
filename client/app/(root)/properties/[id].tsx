@@ -30,10 +30,10 @@ const Property = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchProductDetails("67adedc00c2040d4e55a98a2")); 
+    dispatch(fetchProductDetails("67b1f4f9181be3420eee4c9c")); 
   }, [dispatch, id]);
   console.log('====================================');
-  console.log(productDetails?.data?.product.collections);
+  console.log(productDetails?.images[0].url);
   console.log('====================================');
  
   return (
@@ -44,11 +44,11 @@ const Property = () => {
         contentContainerClassName="pb-32 bg-white"
       >
         <View className="relative w-full" style={{ height: windowHeight / 2 }}>
-          {/* <Image
-            source={{ uri: property?.image }}
+          <Image
+            source={{ uri: productDetails?.images[0].url }}
             className="size-full"
             resizeMode="cover"
-          /> */}
+          />
           <Image
             source={images.whiteGradient}
             className="absolute top-0 w-full z-40"
