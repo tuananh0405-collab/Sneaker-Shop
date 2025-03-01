@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AUTH_URL, BASE_URL } from "@/constants/route";
 
 // Define types
 interface User {
@@ -27,7 +28,8 @@ interface AuthState {
 }
 
 // Khai báo API URL
-const API_URL = "http://192.168.57.105:5501/api/v1/auth";
+// const API_URL = "http://192.168.57.104:5501/api/v1/auth";
+const API_URL = BASE_URL+AUTH_URL;
 
 // Async thunk for email login
 export const loginWithEmail = createAsyncThunk<

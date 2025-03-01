@@ -17,7 +17,7 @@ import images from "@/constants/images";
 import icons from "@/constants/icons";
 import { Redirect, useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { loginWithEmail } from "@/redux/features/auth/authSlice";
+import { loginWithEmail } from "@/redux/features/authSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 
 const SignIn = () => {

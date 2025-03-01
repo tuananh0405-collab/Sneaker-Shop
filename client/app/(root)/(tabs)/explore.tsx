@@ -16,7 +16,7 @@ import Search from "@/components/Search";
 import Filters from "@/components/Filters";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchProducts } from "@/redux/features/product/productSlice";
+import { fetchProducts } from "@/redux/features/productSlice";
 
 const Explore = () => {
   const handleCardPress = (id: string) => router.push(`/properties/${id}`);

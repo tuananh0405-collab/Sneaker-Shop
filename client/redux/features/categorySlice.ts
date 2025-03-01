@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Category } from "@/interface";
+import { BASE_URL, CATEGORY_URL } from "@/constants/route";
 interface CategoryState {
   categories: Category[];
   categoryDetails: Category | null;
@@ -14,7 +15,8 @@ const initialState: CategoryState = {
   error: null,
 };
 
-const API_BASE_URL = "http://192.168.57.105:5501/api/v1/category";
+// const API_BASE_URL = "http://192.168.57.104:5501/api/v1/category";
+const API_BASE_URL = BASE_URL+CATEGORY_URL;
 
 // Fetch all categories
 export const fetchCategories = createAsyncThunk<Category[]>(

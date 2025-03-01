@@ -1,3 +1,6 @@
-export const BASE_URL = ""
+export const BASE_URL = "http://192.168.57.104:5501"
 export const AUTH_URL = "/api/v1/auth"
+export const USER_URL = "/api/v1/users"
+export const CATEGORY_URL = "/api/v1/category"
 export const PRODUCT_URL = "/api/v1/product"
+export const ORDER_URL = "/api/v1/order"

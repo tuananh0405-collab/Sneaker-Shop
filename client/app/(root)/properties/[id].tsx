@@ -13,12 +13,9 @@ import { router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
-import { facilities } from "@/constants/data";
-import Comment from "@/components/Comment";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchProductDetails } from "@/redux/features/product/productSlice";
-import { Product } from "@/interface";
+import { fetchProductDetails } from "@/redux/features/productSlice";
 const Property = () => {
   const { id } = useLocalSearchParams<{ id?: string }>();
 
@@ -32,9 +29,7 @@ const Property = () => {
   useEffect(() => {
     dispatch(fetchProductDetails("67b1f4f9181be3420eee4c9c")); 
   }, [dispatch, id]);
-  console.log('====================================');
-  console.log(productDetails?.images[0].url);
-  console.log('====================================');
+
  
   return (
 

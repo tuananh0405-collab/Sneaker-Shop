@@ -14,7 +14,7 @@ import { settings } from "@/constants/data";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useRouter } from "expo-router";
-import { logoutUser } from "@/redux/features/auth/authSlice";
+import { logoutUser } from "@/redux/features/authSlice";
 import avatar from "@/assets/images/avatar.jpg"
 
 interface SettingsItemProp {

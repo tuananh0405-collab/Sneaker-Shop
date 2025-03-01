@@ -1,3 +1,4 @@
+import { AUTH_URL, BASE_URL, USER_URL } from "@/constants/route";
 import { User } from "@/interface";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
@@ -15,7 +16,8 @@ const initialState: UserState = {
   error: null,
 };
 
-const API_BASE_URL = "http://192.168.57.105:5501/api/v1/users";
+// const API_BASE_URL = "http://192.168.57.104:5501/api/v1/users";
+const API_BASE_URL = BASE_URL+USER_URL;
 
 // Fetch all users
 export const fetchUsers = createAsyncThunk<User[]>(

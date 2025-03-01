@@ -3,7 +3,7 @@ import Filters from "@/components/Filters";
 import NoResults from "@/components/NoResults";
 import Search from "@/components/Search";
 import icons from "@/constants/icons";
-import { fetchProducts } from "@/redux/features/product/productSlice";
+import { fetchProducts } from "@/redux/features/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -67,7 +67,6 @@ const Home = () => {
               <View className="flex flex-row">
                 <Image
                   source={avatar}
-                  // className="h-10 w-10 rounded-full border border-gray-300"
                   style={{
                     height: 40, // Adjust the size
                     width: 40, // Adjust the size

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Product } from "../../../interface";
+import { BASE_URL, PRODUCT_URL } from "@/constants/route";
 
 interface ProductState {
   products: Product[];
@@ -15,7 +16,8 @@ const initialState: ProductState = {
   error: null,
 };
 
-const API_BASE_URL = "http://192.168.57.105:5501/api/v1/product";
+// const API_BASE_URL = "http://192.168.57.104:5501/api/v1/product";
+const API_BASE_URL = BASE_URL+PRODUCT_URL;
 
 export const fetchProducts = createAsyncThunk<Product[], Record<string, any>>(
   "products/fetchProducts",

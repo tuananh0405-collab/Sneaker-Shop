@@ -4,7 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchCategories } from "@/redux/features/categorySlice";
-import { fetchProducts } from "@/redux/features/product/productSlice";
+import { fetchProducts } from "@/redux/features/productSlice";
 import { useDebouncedCallback } from "use-debounce";
 
 const Filters = () => {
@@ -30,12 +30,9 @@ const Filters = () => {
       }, 500);
   const handleCategoryPress = (category: string) => {
     if (selectedCategory === category) {
-      // setSelectedCategory("");
-      // router.setParams({ category: "" });
       return;
     }
     setSelectedCategory(category);
-    // router.setParams({ category });
     debouncedCategory(category);
   };
 
