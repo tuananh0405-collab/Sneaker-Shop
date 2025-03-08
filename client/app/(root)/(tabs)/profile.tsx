@@ -11,10 +11,12 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "@/constants/icons";
 import { settings } from "@/constants/data";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
 import { useRouter } from "expo-router";
-import { logoutUser } from "@/redux/features/auth/authSlice";
+import avatar from "@/assets/images/avatar.jpg";
+import { useGetUserQuery } from "@/redux/api/userApiSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useSignOutMutation } from "@/redux/api/authApiSlice";
 
 interface SettingsItemProp {
   icon: ImageSourcePropType;
@@ -47,17 +49,51 @@ const SettingsItem = ({
 );
 
 const Profile = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const userInfo = useSelector((state: RootState) => state.auth.user);
+  const userId = userInfo?.user?._id;
+
+  // Gọi API lấy thông tin người dùng
+  const { data, isLoading, error } = useGetUserQuery(userId);
+  const user = data?.data;
+  console.log('====================================');
+  console.log(userId);
+  console.log('====================================');
+
+  // API logout
+  const [logout] = useSignOutMutation();
 
   const handleLogout = async () => {
     try {
-      await dispatch(logoutUser()).unwrap();
-      router.replace("/sign-in"); // Redirect to login after logout
+      await logout().unwrap();
+      router.replace("/sign-in");
     } catch (error) {
       Alert.alert("Logout Failed");
     }
-  };  return (
+  };
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-gray-500">Loading user profile...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    console.log('====================================');
+    console.log(error);
+    console.log('====================================');
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-red-500">Error loading profile</Text>
+      </View>
+    );
+  }
+const navigateToCart = () => {
+  router.push("/cart");
+}
+  return (
     <SafeAreaView className="h-full bg-white">
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -68,21 +104,24 @@ const Profile = () => {
           <Image source={icons.bell} className="size-5" />
         </View>
 
-        {/* <View className="flex flex-row justify-center mt-5">
+        <View className="flex flex-row justify-center mt-5">
           <View className="flex flex-col items-center relative mt-5">
             <Image
-              source={{ uri: user?.avatar }}
+              source={avatar}
               className="size-44 relative rounded-full"
             />
             <TouchableOpacity className="absolute bottom-11 right-2">
               <Image source={icons.edit} className="size-9" />
             </TouchableOpacity>
 
-            <Text className="text-2xl font-rubik-bold mt-2">{user?.name}</Text>
+            <Text className="text-2xl font-rubik-bold mt-2">
+              {user?.name || "Unknown User"}
+            </Text>
           </View>
-        </View> */}
+        </View>
 
         <View className="flex flex-col mt-10">
+          <SettingsItem icon={icons.cart} title="My Cart" onPress={navigateToCart}/>
           <SettingsItem icon={icons.calendar} title="My Orders" />
           <SettingsItem icon={icons.wallet} title="Payments" />
         </View>

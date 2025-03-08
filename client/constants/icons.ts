@@ -31,8 +31,18 @@ import swim from "@/assets/icons/swim.png";
 import wifi from "@/assets/icons/wifi.png";
 import location from "@/assets/icons/location.png";
 import edit from "@/assets/icons/edit.png";
+import facebook from "@/assets/icons/facebook.png";
+import cart from "@/assets/icons/cart.png";
+import color from "@/assets/icons/color.png";
+import gender from "@/assets/icons/gender.png";
+import trash from "@/assets/icons/trash.png";
 
 export default {
+  trash,
+  gender,
+  color,
+  cart,
+  facebook,
   google,
   home,
   search,

@@ -13,16 +13,14 @@ interface Props {
 
 
 export const FeaturedCard = ({ item, onPress }: Props) => {
-  console.log('====================================');
-  console.log("Card ", item);
-  console.log('====================================');
+
   return (
     <TouchableOpacity
       onPress={onPress}
       className="flex flex-col items-start w-60 h-80 relative"
     >
       <Image
-        source={{ uri: item.images[0]?.url }}
+        source={{ uri: item.images[0] }}
         className="size-full rounded-2xl"
       />
 
@@ -72,7 +70,7 @@ export const Card = ({ item, onPress }: Props) => {
       </View>
 
       <Image
-        source={{ uri: item?.images[0]?.url }}
+        source={{ uri: item?.images[0] }}
         className="w-full h-40 rounded-lg"
       />
 

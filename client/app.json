@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Restate",
-    "slug": "Restate",
+    "name": "Sneaker",
+    "slug": "Sneaker",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/shoes.png",
     "scheme": "restate",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,14 +13,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
+        "foregroundImage": "./assets/images/shoes.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/shoes.png"
     },
     "plugins": [
       "expo-router",

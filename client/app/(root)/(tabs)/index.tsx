@@ -3,13 +3,11 @@ import Filters from "@/components/Filters";
 import NoResults from "@/components/NoResults";
 import Search from "@/components/Search";
 import icons from "@/constants/icons";
-import { fetchProducts } from "@/redux/features/product/productSlice";
-import { AppDispatch, RootState } from "@/redux/store";
-import { Link, router, useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
+import { useGetProductsQuery } from "@/redux/api/productApiSlice";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Button,
   FlatList,
   Image,
   Text,
@@ -17,31 +15,43 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import avatar from "@/assets/images/avatar.jpg";
+import { RootState } from "@/redux/store";
 
 const Home = () => {
-  const params = useLocalSearchParams<{ query?: string; filter?: string }>();
-
+  const params = useLocalSearchParams<{ search?: string; category?: string }>();
   const handleCardPress = (id: string) => router.push(`/properties/${id}`);
+  const handleSeeAll = () => router.push("/explore");
 
-  const dispatch = useDispatch<AppDispatch>();
-  const { products, loading, error } = useSelector(
-    (state: RootState) => state.product
-  );
+  const user = useSelector((state: RootState) => state.auth.user);
 
+
+  // Lưu trạng thái search & category để truyền vào API
+  const [filters, setFilters] = useState({
+    search: params.search || "",
+    category: params.category || "",
+  });
+
+  // Gọi API sản phẩm dựa vào `filters`
+  const { data, isLoading, error, refetch } = useGetProductsQuery(filters);
+
+  // Cập nhật `filters` khi params thay đổi
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    setFilters({
+      search: params.search || "",
+      category: params.category || "",
+    });
+    refetch(); // Load lại sản phẩm mỗi khi params thay đổi
+  }, [params.search, params.category]);
 
-  
-  console.log("====================================");
-  console.log(products?.data?.products);
-  console.log("====================================");
+  const products = data?.data.products || [];
+
   return (
+    
     <SafeAreaView className="h-full bg-white">
-      <TouchableOpacity onPress={() => handleCardPress("67adedc00c2040d4e55a98a2")}><Text className="text-blue-600">asfsdf</Text></TouchableOpacity>
       <FlatList
-        data={products?.data?.products}
+        data={products}
         numColumns={2}
         renderItem={({ item }) => (
           <Card item={item} onPress={() => handleCardPress(item._id)} />
@@ -51,7 +61,7 @@ const Home = () => {
         columnWrapperClassName="flex gap-5 px-5"
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          loading ? (
+          isLoading ? (
             <ActivityIndicator size="large" className="text-primary-300 mt-5" />
           ) : (
             <NoResults />
@@ -61,18 +71,22 @@ const Home = () => {
           <View className="px-5">
             <View className="flex flex-row items-center justify-between mt-5">
               <View className="flex flex-row">
-                {/* <Image
-                  source={{ uri: user?.avatar }}
-                  className="size-12 rounded-full"
-                /> */}
-
+                <Image
+                  source={avatar}
+                  style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 20,
+                    borderWidth: 1,
+                    borderColor: "#E0E0E0",
+                  }}
+                />
                 <View className="flex flex-col items-start ml-2 justify-center">
                   <Text className="text-xs font-rubik text-black-100">
                     Good Morning
                   </Text>
                   <Text className="text-base font-rubik-medium text-black-300">
-                    {/* {user?.name} */}
-                    name
+                    {user?.user.name}
                   </Text>
                 </View>
               </View>
@@ -81,21 +95,28 @@ const Home = () => {
 
             <Search />
 
+            <View className="mt-5">
+              <Filters onFilterChange={setFilters} />
+            </View>
+
             <View className="my-5">
               <View className="flex flex-row items-center justify-between">
                 <Text className="text-xl font-rubik-bold text-black-300">
                   Featured
                 </Text>
                 <TouchableOpacity>
-                  <Text className="text-base font-rubik-bold text-primary-300">
+                  <Text
+                    className="text-base font-rubik-bold text-primary-300"
+                    onPress={handleSeeAll}
+                  >
                     See all
                   </Text>
                 </TouchableOpacity>
               </View>
 
-              {loading ? (
+              {isLoading ? (
                 <ActivityIndicator size="large" className="text-primary-300" />
-              ) : !products || products.length === 0 ? (
+              ) : products.length === 0 ? (
                 <NoResults />
               ) : (
                 <FlatList
@@ -114,25 +135,9 @@ const Home = () => {
                 />
               )}
             </View>
-
-            <View className="mt-5">
-              <View className="flex flex-row items-center justify-between">
-                <Text className="text-xl font-rubik-bold text-black-300">
-                  Our Recommendation
-                </Text>
-                <TouchableOpacity>
-                  <Text className="text-base font-rubik-bold text-primary-300">
-                    See all
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <Filters />
-            </View>
           </View>
         )}
       />
-      
     </SafeAreaView>
   );
 };

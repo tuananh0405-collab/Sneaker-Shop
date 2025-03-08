@@ -25,4 +25,12 @@ export interface Image {
     email: string;
     token: string;
   }
-  
+  export interface CartItem {
+    product: string;
+    name: string;
+    image: string[];
+    price: number;
+    size: string;
+    color: string;
+    quantity: number;
+  }
