@@ -27,30 +27,11 @@ const SignIn = () => {
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch();
-//   const { loading, user } = useSelector((state:RootState) => state.auth);
-// console.log('====================================');
-// console.log(user);
-// console.log('====================================');
+
   // Gọi API login
   const [login, { isLoading }] = useSignInMutation();
   
-  // // State lưu userId sau khi đăng nhập
-  // const [userId, setUserId] = useState<string | null>(null);
-
-  // // Gọi API lấy thông tin user nếu đã có userId
-  // const { data: userData, error: userError, isLoading: userLoading } = useGetUserQuery(userId!, {
-  //   skip: !userId, // Bỏ qua nếu chưa có userId
-  // });
-
-  // useEffect(() => {
-  //   // Đảm bảo rằng userId tồn tại trước khi gọi API
-  //   if (userId) {
-  //     dispatch(setCredentials(userData?.data)); // Lưu vào Redux
-  //     AsyncStorage.setItem("userInfo", JSON.stringify(userData?.data)); // Lưu vào AsyncStorage
-  //     console.log("Fetched User Details:", userData?.data);
-  //     router.navigate("/"); // Chuyển hướng sau khi lấy thông tin user
-  //   }
-  // }, [userData, userId]);
+ 
   
 
   const handleEmailLogin = async () => {
@@ -112,6 +93,11 @@ const SignIn = () => {
                 ) : (
                   <Text className="text-center text-white font-rubik-medium">Log In</Text>
                 )}
+              </TouchableOpacity>
+              <TouchableOpacity onPress={()=>router.navigate('/sign-up')} className="bg-primary-300 rounded-md py-3 mt-4">
+              
+                  <Text className="text-center text-white font-rubik-medium">Sign Up</Text>
+                
               </TouchableOpacity>
             </View>
             <View className={"flex-row items-center my-6"}>

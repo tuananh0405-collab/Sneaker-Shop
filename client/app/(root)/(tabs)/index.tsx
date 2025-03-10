@@ -20,17 +20,29 @@ import avatar from "@/assets/images/avatar.jpg";
 import { RootState } from "@/redux/store";
 
 const Home = () => {
-  const params = useLocalSearchParams<{ search?: string; category?: string }>();
+  const params = useLocalSearchParams<{
+    search?: string;
+    category?: string;
+    size?: string;
+    color?: string;
+    gender?: string;
+    minPrice?: string;
+    maxPrice?: string;
+  }>();
   const handleCardPress = (id: string) => router.push(`/properties/${id}`);
   const handleSeeAll = () => router.push("/explore");
 
   const user = useSelector((state: RootState) => state.auth.user);
 
-
   // Lưu trạng thái search & category để truyền vào API
   const [filters, setFilters] = useState({
     search: params.search || "",
     category: params.category || "",
+    size: params.size || "",
+    color: params.color || "",
+    gender: params.gender || "",
+    minPrice: params.minPrice || "",
+    maxPrice: params.maxPrice || "",
   });
 
   // Gọi API sản phẩm dựa vào `filters`
@@ -41,14 +53,26 @@ const Home = () => {
     setFilters({
       search: params.search || "",
       category: params.category || "",
+      size: params.size || "",
+      color: params.color || "",
+      gender: params.gender || "",
+      minPrice: params.minPrice || "",
+      maxPrice: params.maxPrice || "",
     });
     refetch(); // Load lại sản phẩm mỗi khi params thay đổi
-  }, [params.search, params.category]);
+  }, [
+    params.search,
+    params.category,
+    params.size,
+    params.color,
+    params.gender,
+    params.minPrice,
+    params.maxPrice,
+  ]);
 
   const products = data?.data.products || [];
 
   return (
-    
     <SafeAreaView className="h-full bg-white">
       <FlatList
         data={products}

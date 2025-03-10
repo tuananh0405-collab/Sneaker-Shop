@@ -57,6 +57,8 @@ const Property = () => {
     }
   };
 
+  const handleBuyNow = () => {}
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -234,6 +236,14 @@ const Property = () => {
           >
             <Text className="text-white text-lg text-center font-rubik-bold">
               Add to Cart
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleBuyNow}
+            className="flex-1 flex flex-row items-center justify-center bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400"
+          >
+            <Text className="text-white text-lg text-center font-rubik-bold">
+              Buy Now
             </Text>
           </TouchableOpacity>
         </View>

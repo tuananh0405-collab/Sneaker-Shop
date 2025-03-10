@@ -93,6 +93,9 @@ const Profile = () => {
 const navigateToCart = () => {
   router.push("/cart");
 }
+const navigateToUserDetail =()=>{
+  router.push('/user')
+}
   return (
     <SafeAreaView className="h-full bg-white">
       <ScrollView
@@ -127,9 +130,11 @@ const navigateToCart = () => {
         </View>
 
         <View className="flex flex-col mt-5 border-t pt-5 border-primary-200">
-          {settings.slice(2).map((item, index) => (
-            <SettingsItem key={index} {...item} />
-          ))}
+
+          <SettingsItem icon={icons.person} title="Profile" onPress={navigateToUserDetail}/>
+          <SettingsItem icon={icons.language} title="Language" />
+          <SettingsItem icon={icons.info} title="Help Center" />
+
         </View>
 
         <View className="flex flex-col border-t mt-5 pt-5 border-primary-200">

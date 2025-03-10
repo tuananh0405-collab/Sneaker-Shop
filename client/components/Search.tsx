@@ -22,6 +22,13 @@ const Search = () => {
   const [search, setSearch] = useState(params.search || "");
   const [modalVisible, setModalVisible] = useState(false);
 
+  // Filter states
+  const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedGender, setSelectedGender] = useState<string>("");
+  const [minPrice, setMinPrice] = useState<string>("");
+  const [maxPrice, setMaxPrice] = useState<string>("");
+
   // Hàm debounce tìm kiếm
   const debouncedSearch = useDebouncedCallback((text: string) => {
     router.setParams({ search: text });
@@ -45,6 +52,10 @@ const Search = () => {
   // Xử lý áp dụng bộ lọc
   const handleApplyFilters = () => {
     setModalVisible(false); // Đóng modal khi áp dụng bộ lọc
+    router.setParams({size: selectedSize})
+    router.setParams({color: selectedColor })
+    router.setParams({gender: selectedGender})
+    router.setParams({minPrice: minPrice, maxPrice: maxPrice})
   };
 
   return (
@@ -88,25 +99,77 @@ const Search = () => {
                   {/* Các bộ lọc */}
                   <ScrollView showsVerticalScrollIndicator={false}>
                     <View className="mb-4">
-                      <Text className="font-rubik">Category</Text>
-                      <TextInput
-                        placeholder="Enter category"
-                        className="border border-primary-200 p-2 rounded-md"
-                      />
+                      <Text className="font-rubik">Size</Text>
+                      <View className="flex-row">
+                        {["S", "M", "L", "XL", "XXL"].map((size) => (
+                          <TouchableOpacity
+                            key={size}
+                            onPress={() => setSelectedSize(size)}
+                            style={{
+                              backgroundColor: selectedSize === size ? "#d1d1d1" : "transparent",
+                              padding: 5,
+                              margin: 5,
+                              borderRadius: 5,
+                            }}
+                          >
+                            <Text>{size.toUpperCase()}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+
+                    <View className="mb-4">
+                      <Text className="font-rubik">Color</Text>
+                      <View className="flex-row">
+                        {["Black", "Red", "Blue", "Golden"].map((color) => (
+                          <TouchableOpacity
+                            key={color}
+                            onPress={() => setSelectedColor(color)}
+                            style={{
+                              backgroundColor: selectedColor === color ? "#d1d1d1" : "transparent",
+                              padding: 5,
+                              margin: 5,
+                              borderRadius: 5,
+                            }}
+                          >
+                            <Text>{color}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+
+                    <View className="mb-4">
+                      <Text className="font-rubik">Gender</Text>
+                      <View className="flex-row">
+                        {["Men", "Woman", "Unisex"].map((gender) => (
+                          <TouchableOpacity
+                            key={gender}
+                            onPress={() => setSelectedGender(gender)}
+                            style={{
+                              backgroundColor: selectedGender === gender ? "#d1d1d1" : "transparent",
+                              padding: 5,
+                              margin: 5,
+                              borderRadius: 5,
+                            }}
+                          >
+                            <Text>{gender.charAt(0).toUpperCase() + gender.slice(1)}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
                     </View>
 
                     <View className="mb-4">
                       <Text className="font-rubik">Price Range</Text>
                       <TextInput
-                        placeholder="Enter price range"
-                        className="border border-primary-200 p-2 rounded-md"
+                        placeholder="Min Price"
+                        value={minPrice}
+                        onChangeText={setMinPrice}
+                        className="border border-primary-200 p-2 rounded-md mb-2"
                       />
-                    </View>
-
-                    <View className="mb-4">
-                      <Text className="font-rubik">Brand</Text>
                       <TextInput
-                        placeholder="Enter brand"
+                        placeholder="Max Price"
+                        value={maxPrice}
+                        onChangeText={setMaxPrice}
                         className="border border-primary-200 p-2 rounded-md"
                       />
                     </View>

@@ -65,7 +65,7 @@ const Cart = () => {
           
           <View className="z-50 absolute inset-x-7" style={{ top: Platform.OS === "ios" ? 70 : 20 }}>
             <View className="flex flex-row items-center w-full justify-between">
-              <TouchableOpacity onPress={() => router.back()} className="flex flex-row bg-primary-200 rounded-full size-11 items-center justify-center">
+              <TouchableOpacity onPress={() =>  router.replace('/profile')} className="flex flex-row bg-primary-200 rounded-full size-11 items-center justify-center">
                 <Image source={icons.backArrow} className="size-5" />
               </TouchableOpacity>
 
