@@ -1,5 +1,6 @@
 import { apiSlice } from "./apiSlice";
 import { ORDER_URL } from "../constant";
+import { create } from "react-test-renderer";
 
 interface Order {
   _id: string;
@@ -51,7 +52,15 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    createOrder: builder.mutation<{ data: Order }, Order>({
+      query: (order) => ({ url: `${ORDER_URL}`, method: "POST", body: order }),
+    }),
   }),
 });
 
-export const { useGetOrdersQuery, useGetOrderByIdQuery, useGetOrdersByUserIdQuery } = orderApiSlice;
+export const {
+  useGetOrdersQuery,
+  useGetOrderByIdQuery,
+  useGetOrdersByUserIdQuery,
+  useCreateOrderMutation,
+} = orderApiSlice;
