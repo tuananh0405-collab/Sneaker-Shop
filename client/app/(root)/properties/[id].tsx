@@ -39,7 +39,8 @@ const Property = () => {
     }
 
     const selectedVariant = product?.variants.find(
-      (variant) => variant.size === selectedSize && variant.color === selectedColor
+      (variant) =>
+        variant.size === selectedSize && variant.color === selectedColor
     );
 
     if (selectedVariant) {
@@ -51,13 +52,12 @@ const Property = () => {
         quantity: quantity, // Gửi số lượng vào API
       });
       Alert.alert("Added to cart");
-      
     } else {
       Alert.alert("Variant not available");
     }
   };
 
-  const handleBuyNow = () => {}
+  const handleBuyNow = () => {};
 
   if (isLoading) {
     return (
@@ -87,10 +87,6 @@ const Property = () => {
             className="size-full"
             style={{ height: 450 }}
             resizeMode="cover"
-          />
-          <Image
-            source={images.whiteGradient}
-            className="absolute top-0 w-full z-40"
           />
 
           <View
@@ -134,21 +130,26 @@ const Property = () => {
           </View>
 
           {/* Render color options from variants */}
+          {/* Render color options from variants */}
           <View className="mt-5">
-            <Text className="text-black-300 text-sm font-rubik-bold">Colors</Text>
+            <Text className="text-black-300 text-sm font-rubik-bold">
+              Colors
+            </Text>
             <View className="flex flex-row gap-3 mt-2">
-              {product?.variants?.map((variant, index) => (
+              {[
+                ...new Set(product?.variants?.map((variant) => variant.color)),
+              ].map((color, index) => (
                 <TouchableOpacity
                   key={index}
-                  onPress={() => setSelectedColor(variant.color)}
+                  onPress={() => setSelectedColor(color)}
                   style={{
-                    borderWidth: selectedColor === variant.color ? 2 : 1,
-                    borderColor: selectedColor === variant.color ? "#0061ff" : "#ddd",
+                    borderWidth: selectedColor === color ? 2 : 1,
+                    borderColor: selectedColor === color ? "#0061ff" : "#ddd",
                     padding: 5,
                     borderRadius: 5,
                   }}
                 >
-                  <Text className="text-black-300">{variant.color}</Text>
+                  <Text className="text-black-300">{color}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -156,28 +157,31 @@ const Property = () => {
 
           {/* Render size options from variants */}
           <View className="mt-5">
-            <Text className="text-black-300 text-sm font-rubik-bold">Sizes</Text>
-            <View className="flex flex-row gap-3 mt-2">
-              {product?.variants?.map((variant, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => setSelectedSize(variant.size)}
-                  style={{
-                    borderWidth: selectedSize === variant.size ? 2 : 1,
-                    borderColor: selectedSize === variant.size ? "#0061ff" : "#ddd",
-                    padding: 5,
-                    borderRadius: 5,
-                  }}
-                >
-                  <Text className="text-black-300">{variant.size}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
+  <Text className="text-black-300 text-sm font-rubik-bold">Sizes</Text>
+  <View className="flex flex-row gap-3 mt-2">
+    {[...new Set(product?.variants?.map((variant) => variant.size))].map((size, index) => (
+      <TouchableOpacity
+        key={index}
+        onPress={() => setSelectedSize(size)}
+        style={{
+          borderWidth: selectedSize === size ? 2 : 1,
+          borderColor: selectedSize === size ? "#0061ff" : "#ddd",
+          padding: 5,
+          borderRadius: 5,
+        }}
+      >
+        <Text className="text-black-300">{size}</Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+</View>
+
 
           {/* Lựa chọn số lượng */}
           <View className="mt-5">
-            <Text className="text-black-300 text-sm font-rubik-bold">Quantity</Text>
+            <Text className="text-black-300 text-sm font-rubik-bold">
+              Quantity
+            </Text>
             <View className="flex flex-row items-center mt-2 gap-3">
               <TouchableOpacity
                 onPress={() => setQuantity(Math.max(1, quantity - 1))}
@@ -208,7 +212,9 @@ const Property = () => {
           </View>
 
           <View className="w-full border-t border-primary-200 pt-7 mt-5">
-            <Text className="text-black-300 text-xl font-rubik-bold">Overview</Text>
+            <Text className="text-black-300 text-xl font-rubik-bold">
+              Overview
+            </Text>
             <Text className="text-black-200 text-base font-rubik mt-2">
               {product?.description || "No description available."}
             </Text>
