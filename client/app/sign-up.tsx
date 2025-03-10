@@ -1,21 +1,31 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
 import { useSignUpMutation, useVerifyEmailMutation } from "@/redux/api/authApiSlice";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");  // State for verification code
-  const [showVerify, setShowVerify] = useState(false); // State to show/hide the verification input
+  const [verificationCode, setVerificationCode] = useState("");
+  const [showVerify, setShowVerify] = useState(false);
   const router = useRouter();
 
-  // API call for signing up
+  // API calls
   const [signUp, { isLoading: isSigningUp }] = useSignUpMutation();
   const [verifyEmail, { isLoading: isVerifying }] = useVerifyEmailMutation();
 
+  // Handle sign-up process
   const handleSignUp = async () => {
     if (!name || !email || !password || !phone) {
       Alert.alert("Error", "Please fill in all fields.");
@@ -23,9 +33,9 @@ const SignUp = () => {
     }
 
     try {
-      const response = await signUp({name, email, password, phone }).unwrap();
+      const response = await signUp({ name, email, password, phone }).unwrap();
       Alert.alert("Success", response.message, [
-        { text: "OK", onPress: () => setShowVerify(true) },  // Show the verification code input after successful sign-up
+        { text: "OK", onPress: () => setShowVerify(true) },
       ]);
     } catch (err) {
       Alert.alert("Sign Up Failed", err?.data?.message || "Something went wrong.");
@@ -37,79 +47,125 @@ const SignUp = () => {
       Alert.alert("Error", "Please enter the verification code.");
       return;
     }
-
+  
     try {
-      const response = await verifyEmail({ email, verificationCode, password }).unwrap();
-     
-       router.push("/sign-in")  // Redirect to sign-in after successful email verification
-      
+      await verifyEmail({ email, verificationCode, password }).unwrap();
+  
+      // 🔥 Reset toàn bộ form sau khi xác thực thành công
+      setName("");
+      setEmail("");
+      setPassword("");
+      setPhone("");
+      setVerificationCode("");
+      setShowVerify(false);
+  
+      Alert.alert("Success", "Your email has been verified!", [
+        { text: "OK", onPress: () => router.push("/sign-in") },
+      ]);
     } catch (err) {
       Alert.alert("Verification Failed", err?.data?.message || "Verification failed. Please try again.");
     }
   };
+  
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, textAlign: "center", marginBottom: 20 }}>Sign Up</Text>
+        <SafeAreaView className="h-full bg-white">
+    
+    <ScrollView className="flex-1 bg-white p-6">
+      <Text className="text-2xl font-bold text-center text-gray-900 mb-6">Create an Account</Text>
 
-      <TextInput
-        style={{ borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 10 }}
-        placeholder="Full Name"
-        value={name}
-        onChangeText={setName}
-      />
+      {/* Full Name Input */}
+      <View className="mb-4">
+        <Text className="text-gray-700 mb-1">Full Name</Text>
+        <TextInput
+          className="border border-gray-300 rounded-lg p-3"
+          placeholder="Enter your full name"
+          placeholderTextColor="gray"
+          value={name}
+          onChangeText={setName}
+        />
+      </View>
 
-      <TextInput
-        style={{ borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 10 }}
-        placeholder="Email"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
+      {/* Email Input */}
+      <View className="mb-4">
+        <Text className="text-gray-700 mb-1">Email</Text>
+        <TextInput
+          className="border border-gray-300 rounded-lg p-3"
+          placeholder="Enter your email"
+          placeholderTextColor="gray"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
+      </View>
 
-      <TextInput
-        style={{ borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 10 }}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+      {/* Password Input */}
+      <View className="mb-4">
+        <Text className="text-gray-700 mb-1">Password</Text>
+        <TextInput
+          className="border border-gray-300 rounded-lg p-3"
+          placeholder="Enter your password"
+          placeholderTextColor="gray"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </View>
 
-      <TextInput
-        style={{ borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 10 }}
-        placeholder="Phone"
-        value={phone}
-        onChangeText={setPhone}
-      />
+      {/* Phone Input */}
+      <View className="mb-4">
+        <Text className="text-gray-700 mb-1">Phone Number</Text>
+        <TextInput
+          className="border border-gray-300 rounded-lg p-3"
+          placeholder="Enter your phone number"
+          placeholderTextColor="gray"
+          keyboardType="phone-pad"
+          value={phone}
+          onChangeText={setPhone}
+        />
+      </View>
 
-      <TouchableOpacity onPress={handleSignUp} style={{ backgroundColor: "#4CAF50", padding: 15, marginTop: 10 }}>
+      {/* Sign Up Button */}
+      <TouchableOpacity onPress={handleSignUp} className="bg-primary-300 rounded-md py-3 mt-4">
         {isSigningUp ? (
           <ActivityIndicator color="white" />
         ) : (
-          <Text style={{ color: "white", textAlign: "center" }}>Sign Up</Text>
+          <Text className="text-center text-white font-medium">Sign Up</Text>
         )}
       </TouchableOpacity>
 
-      {/* Verify Email Section */}
-     
-        <View style={{ marginTop: 20 }}>
-          <Text style={{ fontSize: 18, textAlign: "center", marginBottom: 10 }}>Verify Your Email</Text>
+      {/* Verify Email Section - Hiển thị sau khi đăng ký thành công */}
+      {showVerify && (
+        <View className="mt-6">
+          <Text className="text-lg font-bold text-center text-gray-900">Verify Your Email</Text>
+          <Text className="text-sm text-center text-gray-600 mb-3">
+            Enter the verification code sent to your email.
+          </Text>
+
           <TextInput
-            style={{ borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 10 }}
-            placeholder="Enter Verification Code"
+            className="border border-gray-300 rounded-lg p-3 mb-4"
+            placeholder="Enter verification code"
+            placeholderTextColor="gray"
             value={verificationCode}
             onChangeText={setVerificationCode}
           />
-          <TouchableOpacity onPress={handleVerify} style={{ backgroundColor: "#4CAF50", padding: 15 }}>
+
+          <TouchableOpacity onPress={handleVerify} className="bg-green-500 rounded-md py-3">
             {isVerifying ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text style={{ color: "white", textAlign: "center" }}>Verify</Text>
+              <Text className="text-center text-white font-medium">Verify</Text>
             )}
           </TouchableOpacity>
         </View>
-      
-    </View>
+      )}
+
+      {/* Redirect to Sign In */}
+      <TouchableOpacity onPress={() => router.push("/sign-in")} className="mt-4">
+        <Text className="text-center text-primary-300">Already have an account? Sign In</Text>
+      </TouchableOpacity>
+    </ScrollView></SafeAreaView>
   );
 };
 

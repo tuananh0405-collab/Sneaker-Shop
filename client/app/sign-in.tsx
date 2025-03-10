@@ -30,9 +30,6 @@ const SignIn = () => {
 
   // Gọi API login
   const [login, { isLoading }] = useSignInMutation();
-  
- 
-  
 
   const handleEmailLogin = async () => {
     if (!email || !password) {
@@ -47,18 +44,26 @@ const SignIn = () => {
       AsyncStorage.setItem("userInfo", JSON.stringify(response.data)); // Lưu vào AsyncStorage
       router.navigate("/"); // Chuyển hướng sau khi đăng nhập
     } catch (error) {
-      Alert.alert("Login Failed", error?.data?.message || "Invalid credentials");
+      Alert.alert(
+        "Login Failed",
+        error?.data?.message || "Invalid credentials"
+      );
     }
   };
 
-  const handleLogin = () => {
-  };
+  const handleLogin = () => {};
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <SafeAreaView className="bg-white h-full">
         <ScrollView contentContainerClassName="h-full">
-          <Image source={images.onboarding} className="w-full h-3/6" resizeMode="contain" />
+          <Image
+            source={images.onboarding}
+            className="w-full h-3/6"
+            resizeMode="contain"
+          />
           <View className="px-10">
             <Text className="text-base font-rubik text-center uppercase text-black-200">
               Welcome to MMA
@@ -87,17 +92,25 @@ const SignIn = () => {
                 value={password}
                 onChangeText={setPassword}
               />
-              <TouchableOpacity onPress={handleEmailLogin} className="bg-primary-300 rounded-md py-3 mt-4">
-                {isLoading  ? (
+              <TouchableOpacity
+                onPress={handleEmailLogin}
+                className="bg-primary-300 rounded-md py-3 mt-4"
+              >
+                {isLoading ? (
                   <ActivityIndicator color="white" />
                 ) : (
-                  <Text className="text-center text-white font-rubik-medium">Log In</Text>
+                  <Text className="text-center text-white font-rubik-medium">
+                    Log In
+                  </Text>
                 )}
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>router.navigate('/sign-up')} className="bg-primary-300 rounded-md py-3 mt-4">
-              
-                  <Text className="text-center text-white font-rubik-medium">Sign Up</Text>
-                
+              <TouchableOpacity
+                onPress={() => router.navigate("/sign-up")}
+                className="bg-primary-300 rounded-md py-3 mt-4"
+              >
+                <Text className="text-center text-white font-rubik-medium">
+                  Sign Up
+                </Text>
               </TouchableOpacity>
             </View>
             <View className={"flex-row items-center my-6"}>
