@@ -16,7 +16,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     // Thêm sản phẩm vào giỏ hàng
-    addToCart: (state, action: PayloadAction<CartItem>) => {
+    addToCartState: (state, action: PayloadAction<CartItem>) => {
       const existingProductIndex = state.products.findIndex(
         (item) =>
           item.product === action.payload.product &&
@@ -40,7 +40,7 @@ const cartSlice = createSlice({
     },
 
     // Cập nhật số lượng sản phẩm trong giỏ hàng
-    updateCart: (
+    updateCartState: (
       state,
       action: PayloadAction<{ productId: string; size: string; color: string; quantity: number }>
     ) => {
@@ -60,7 +60,7 @@ const cartSlice = createSlice({
     },
 
     // Xóa sản phẩm khỏi giỏ hàng
-    removeFromCart: (
+    removeFromCartState: (
       state,
       action: PayloadAction<{ productId: string; size: string; color: string }>
     ) => {
@@ -75,14 +75,19 @@ const cartSlice = createSlice({
       );
     },
 
+    setCart: (state, action: PayloadAction<{ products: CartItem[]; totalPrice: number }>) => {
+      state.products = action.payload.products;
+      state.totalPrice = action.payload.totalPrice;
+    },
+
     // Xóa toàn bộ giỏ hàng
-    clearCart: (state) => {
+    clearCartState: (state) => {
       state.products = [];
       state.totalPrice = 0;
     },
   },
 });
 
-export const { addToCart, updateCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCartState, updateCartState, removeFromCartState, clearCartState , setCart} = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -1,4 +1,4 @@
-export const BASE_URL: string = "http://172.20.10.9:5500";
+export const BASE_URL: string = "http://localhost:5500";
 export const AUTH_URL: string = "/api/v1/auth";
 export const USERS_URL: string = "/api/v1/users";
 export const CART_URL: string = "/api/v1/cart";

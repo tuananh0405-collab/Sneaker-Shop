@@ -16,13 +16,15 @@ import images from "@/constants/images";
 import icons from "@/constants/icons";
 import { useGetProductQuery } from "@/redux/api/productApiSlice";
 import { useAddToCartMutation } from "@/redux/api/cartApiSlice"; // sử dụng hook addToCart
+import { addToCartState } from "@/redux/features/cart/cartSlice";
+import { AppDispatch } from "@/redux/store";
 
 const Property = () => {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1); // Lưu số lượng người dùng chọn
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const windowHeight = Dimensions.get("window").height;
 
@@ -32,31 +34,74 @@ const Property = () => {
 
   const [addToCart, { isLoading: isAdding }] = useAddToCartMutation(); // sử dụng hook addToCart
 
+  // const handleAddToCart = async () => {
+  //   if (!selectedSize || !selectedColor) {
+  //     Alert.alert("Please select both size and color");
+  //     return;
+  //   }
+
+  //   const selectedVariant = product?.variants.find(
+  //     (variant) =>
+  //       variant.size === selectedSize && variant.color === selectedColor
+  //   );
+
+  //   if (selectedVariant) {
+  //     // Gọi API add to cart
+  //     await addToCart({
+  //       productId: product._id,
+  //       size: selectedSize,
+  //       color: selectedColor,
+  //       quantity: quantity, // Gửi số lượng vào API
+  //     });
+  //     Alert.alert("Added to cart");
+  //   } else {
+  //     Alert.alert("Variant not available");
+  //   }
+  // };
+
   const handleAddToCart = async () => {
     if (!selectedSize || !selectedColor) {
       Alert.alert("Please select both size and color");
       return;
     }
-
+  
     const selectedVariant = product?.variants.find(
-      (variant) =>
-        variant.size === selectedSize && variant.color === selectedColor
+      (variant) => variant.size === selectedSize && variant.color === selectedColor
     );
-
+  
     if (selectedVariant) {
-      // Gọi API add to cart
-      await addToCart({
-        productId: product._id,
+      // Cấu trúc sản phẩm
+      const cartItem: CartItem = {
+        product: product._id,
+        name: product.name,
+        image: product.images[0],
+        price: selectedVariant.price,
         size: selectedSize,
         color: selectedColor,
-        quantity: quantity, // Gửi số lượng vào API
-      });
-      Alert.alert("Added to cart");
+        quantity: quantity,
+      };
+  
+      try {
+        // Gọi API add to cart
+        await addToCart({
+          productId: product._id,
+          size: selectedSize,
+          color: selectedColor,
+          quantity: quantity,
+        }).unwrap();
+  
+        // Dispatch vào Redux store
+        dispatch(addToCartState(cartItem));
+  
+        Alert.alert("Added to cart");
+      } catch (error) {
+        Alert.alert("Failed to add to cart");
+      }
     } else {
       Alert.alert("Variant not available");
     }
   };
-
+  
   const handleBuyNow = () => {};
 
   if (isLoading) {
