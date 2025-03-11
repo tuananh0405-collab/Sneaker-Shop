@@ -33,6 +33,7 @@ const Checkout = () => {
   const [country, setCountry] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("VNPAY");
   const [couponCode, setCouponCode] = useState("");
+  const [couponId, setCouponId] = useState("");
   const [discount, setDiscount] = useState(0);
   const [selectedCoupon, setSelectedCoupon] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -61,6 +62,7 @@ const Checkout = () => {
     if (couponDataByName) {
       const coupon = couponDataByName?.data?.coupon;
       setDiscount(coupon.discount);
+      setCouponId(coupon._id)
       Alert.alert(`Coupon applied! You saved ${coupon.discount}%.`);
     } else if (error) {
       Alert.alert(
@@ -71,36 +73,39 @@ const Checkout = () => {
   };
 
   const handleSubmit = async () => {
+    // Dữ liệu đơn hàng
     const orderData = {
       orderItems: cart.map((item) => ({
-        product: item.product,
-        name: item.name,
-        image: item.image,
-        price: item.price,
-        size: item.size,
-        color: item.color,
-        quantity: item.quantity,
+        product: item.product, // product ID
+        name: item.name, // tên sản phẩm
+        image: item.image, // ảnh sản phẩm
+        price: item.price, // giá sản phẩm
+        size: item.size, // kích cỡ
+        color: item.color, // màu sắc
+        quantity: item.quantity, // số lượng
       })),
-      addressId: selectedAddressId,
-      fullName,
-      phone,
-      location,
-      city,
-      country,
-      paymentMethod,
-      totalPrice,
-      priceAfterDiscount,
-      couponId: couponCode,
-      code: "",
+      addressId: selectedAddressId, // ID của địa chỉ đã chọn
+      fullName: fullName, // tên người nhận
+      phone: phone, // số điện thoại
+      location: location, // địa chỉ chi tiết
+      city: city, // thành phố
+      country: country, // quốc gia
+      paymentMethod: paymentMethod, // phương thức thanh toán (COD)
+      totalPrice: totalPrice, // tổng giá trị trước khi giảm
+      couponId: couponId, // mã coupon
+      priceAfterDiscount: priceAfterDiscount, // giá trị sau khi giảm
+      code: "", // nếu cần mã thì thay đổi tại đây
     };
 
-    // Simulate sending data to server
+    // In ra dữ liệu đơn hàng để kiểm tra
     console.log(orderData);
 
     try {
+      // Gửi yêu cầu tạo đơn hàng tới API (giả sử createOrder là mutation API)
       await createOrder(orderData);
-      router.push("/order");
+      router.push("/order"); // Điều hướng đến trang đơn hàng
     } catch (error) {
+      // Xử lý lỗi nếu có
       Alert.alert("Error", "Something went wrong while placing the order.");
     }
   };

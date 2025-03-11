@@ -14,16 +14,12 @@ interface Order {
     color: string;
     quantity: number;
   }[];
-  address: {
-    _id: string;
-    user: string;
-    fullName: string;
-    phone: string;
-    location: string;
-    city: string;
-    country: string;
-    isDefault: boolean;
-  };
+  addressId: string;
+  fullName: string;
+  phone: string;
+  location: string;
+  city: string;
+  country: string;
   paymentMethod: string;
   totalPrice: number;
   coupon: string;
