@@ -92,7 +92,9 @@ const OrderDetail = () => {
       {/* Order Status and Total Price */}
       <View className="flex flex-row justify-between items-center m-4">
         <Text className="text-xl font-semibold">{order?.status}</Text>
-        <Text className="text-lg text-primary-300">${order?.totalPrice}</Text>
+        <Text className="text-lg text-primary-300">
+          ${order?.priceAfterDiscount}
+        </Text>
       </View>
 
       {/* Thông tin người mua */}

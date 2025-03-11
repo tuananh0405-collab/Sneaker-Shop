@@ -14,9 +14,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "expo-router";
 import icons from "@/constants/icons";
-import { useGetCouponByNameQuery } from "@/redux/api/couponApiSlice";
+import { useGetCouponsQuery } from "@/redux/api/couponApiSlice";
 import { useGetAddressListQuery } from "@/redux/api/addressApiSlice";
 import { useCreateOrderMutation } from "@/redux/api/orderApiSlice";
+import { useCreatePaymentUrlMutation } from "@/redux/api/checkoutApiSlice";
 
 const Checkout = () => {
   const router = useRouter();
@@ -33,19 +34,19 @@ const Checkout = () => {
   const [country, setCountry] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("VNPAY");
   const [couponCode, setCouponCode] = useState("");
-  const [couponId, setCouponId] = useState("");
+  const [couponId, setCouponId] = useState<string | null>(null);
   const [discount, setDiscount] = useState(0);
-  const [selectedCoupon, setSelectedCoupon] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { data: addressData } = useGetAddressListQuery();
   const [createOrder] = useCreateOrderMutation();
+  const [createPaymentUrl] = useCreatePaymentUrlMutation();
 
   const {
-    data: couponDataByName,
-    error,
-    isLoading: isCouponLoading,
-  } = useGetCouponByNameQuery(couponCode);
+    data: couponsData,
+    error: couponError,
+    isLoading: isCouponsLoading,
+  } = useGetCouponsQuery();
 
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -59,12 +60,18 @@ const Checkout = () => {
       return;
     }
 
-    if (couponDataByName) {
-      const coupon = couponDataByName?.data?.coupon;
-      setDiscount(coupon.discount);
-      setCouponId(coupon._id)
-      Alert.alert(`Coupon applied! You saved ${coupon.discount}%.`);
-    } else if (error) {
+    if (couponsData) {
+      const coupon = couponsData.data.coupons.find(
+        (c) => c.name.toLowerCase() === couponCode.trim().toLowerCase()
+      );
+      if (coupon) {
+        setDiscount(coupon.discount);
+        setCouponId(coupon._id);
+        Alert.alert(`Coupon applied! You saved ${coupon.discount}%.`);
+      } else {
+        Alert.alert("Error", "Could not fetch coupon data.");
+      }
+    } else if (couponError) {
       Alert.alert(
         "Coupon not found.",
         "The coupon code you entered is not valid."
@@ -97,15 +104,37 @@ const Checkout = () => {
       code: "", // nếu cần mã thì thay đổi tại đây
     };
 
-    // In ra dữ liệu đơn hàng để kiểm tra
     console.log(orderData);
 
     try {
-      // Gửi yêu cầu tạo đơn hàng tới API (giả sử createOrder là mutation API)
-      await createOrder(orderData);
-      router.push("/order"); // Điều hướng đến trang đơn hàng
+      if (paymentMethod === "VNPAY") {
+        // Gọi API VNPAY để xử lý thanh toán
+        const response = await createPaymentUrl({
+          amount: priceAfterDiscount,
+          bankCode: "",
+          language: "vn",
+        });
+        if (response?.data?.message === "Success") {
+          // Nếu thanh toán thành công, cập nhật đơn hàng và điều hướng đến trang VNPAY
+          const orderDataWithCode = {
+            ...orderData,
+            code: response?.data?.code, // Giả sử trả về mã thanh toán
+          };
+          console.log(orderDataWithCode);
+          await createOrder(orderDataWithCode);
+          router.push("/order"); // Điều hướng đến trang đơn hàng
+        } else {
+          // Nếu thanh toán thất bại, quay lại trang giỏ hàng
+          Alert.alert("Payment failed", "Transaction could not be completed.");
+          router.replace("/cart");
+        }
+      } else {
+        // Xử lý thanh toán COD
+        await createOrder(orderData);
+        router.push("/order");
+      }
     } catch (error) {
-      // Xử lý lỗi nếu có
+      // Xử lý lỗi trong trường hợp không thể tạo đơn hàng
       Alert.alert("Error", "Something went wrong while placing the order.");
     }
   };
@@ -144,7 +173,7 @@ const Checkout = () => {
     <SafeAreaView className="flex-1 bg-white">
       <FlatList
         data={[1]} // Adding a dummy element to make FlatList work as the outer scroll
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={(item, index) => index.toString()}
         ListHeaderComponent={
           <>
             {/* Header */}
@@ -161,7 +190,7 @@ const Checkout = () => {
               <Text className="text-2xl font-bold mb-4">Your Order</Text>
               <FlatList
                 data={cart}
-                keyExtractor={(item) => item.product}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={renderProductItem}
               />
             </View>

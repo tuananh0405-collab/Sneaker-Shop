@@ -37,7 +37,9 @@ const MyOrders = () => {
     <View className="border-b border-gray-300 p-4">
       <View className="flex flex-row items-center justify-between">
         <Text className="text-xl font-semibold">{item.status}</Text>
-        <Text className="text-lg text-primary-300">${item.totalPrice}</Text>
+        <Text className="text-lg text-primary-300">
+          ${item.priceAfterDiscount}
+        </Text>
       </View>
       <View className="mt-2">
         <Text className="text-sm text-gray-600">
@@ -58,7 +60,7 @@ const MyOrders = () => {
       </View>
       <FlatList
         data={item.orderItems}
-        keyExtractor={(orderItem) => orderItem.product}
+        keyExtractor={(orderItem, index) => index.toString()}
         renderItem={({ item }) => (
           <View className="flex flex-row items-center mt-2">
             <Image
