@@ -36,10 +36,21 @@ export const orderApiSlice = apiSlice.injectEndpoints({
     getOrders: builder.query<{ data: { orders: Order[] } }, void>({
       query: () => ({ url: `${ORDER_URL}`, credentials: "include" }),
     }),
-    getOrdersByUserId: builder.query<{ data: { orders: Order[] } }, string>({
-      query: (userId) => ({
+    getOrdersByUserId: builder.query<
+      {
+        data: {
+          orders: Order[];
+          totalPages: number;
+          currentPage: number;
+          totalOrders: number;
+        };
+      },
+      { userId: string; page?: number; limit?: number }
+    >({
+      query: ({ userId, page = 1, limit = 5 }) => ({
         url: `${ORDER_URL}/user/${userId}`,
         credentials: "include",
+        params: { page, limit },
       }),
     }),
     getOrderById: builder.query<{ data: Order }, string>({
