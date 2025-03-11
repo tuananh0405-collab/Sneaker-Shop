@@ -62,6 +62,9 @@ export const orderApiSlice = apiSlice.injectEndpoints({
     createOrder: builder.mutation<{ data: Order }, Order>({
       query: (order) => ({ url: `${ORDER_URL}`, method: "POST", body: order }),
     }),
+    createOrderNow: builder.mutation<{ data: Order }, Order>({
+      query: (order) => ({ url: `${ORDER_URL}/now`, method: "POST", body: order }),
+    }),
   }),
 });
 
@@ -70,4 +73,5 @@ export const {
   useGetOrderByIdQuery,
   useGetOrdersByUserIdQuery,
   useCreateOrderMutation,
+  useCreateOrderNowMutation,
 } = orderApiSlice;
