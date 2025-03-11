@@ -17,6 +17,7 @@ import icons from "@/constants/icons";
 import { useGetCouponByNameQuery } from "@/redux/api/couponApiSlice";
 import { useGetAddressListQuery } from "@/redux/api/addressApiSlice";
 import { useCreateOrderMutation } from "@/redux/api/orderApiSlice";
+
 const Checkout = () => {
   const router = useRouter();
   const cartState = useSelector((state: RootState) => state.cart);
@@ -58,7 +59,7 @@ const Checkout = () => {
     }
 
     if (couponDataByName) {
-      const coupon = couponDataByName.data.coupon;
+      const coupon = couponDataByName?.data?.coupon;
       setDiscount(coupon.discount);
       Alert.alert(`Coupon applied! You saved ${coupon.discount}%.`);
     } else if (error) {
@@ -199,6 +200,37 @@ const Checkout = () => {
                   <Text className="text-center">Select Existing Address</Text>
                 </TouchableOpacity>
               </View>
+              {selectedAddressId !== null && (
+                <View className="mt-4 bg-gray-100 p-4 rounded-lg">
+                  <Text className="font-medium text-lg">
+                    {
+                      addressData?.data.find(
+                        (address) => address._id === selectedAddressId
+                      )?.fullName
+                    }
+                  </Text>
+                  <Text>
+                    {
+                      addressData?.data.find(
+                        (address) => address._id === selectedAddressId
+                      )?.location
+                    }
+                  </Text>
+                  <Text>
+                    {
+                      addressData?.data.find(
+                        (address) => address._id === selectedAddressId
+                      )?.city
+                    }
+                    ,{" "}
+                    {
+                      addressData?.data.find(
+                        (address) => address._id === selectedAddressId
+                      )?.country
+                    }
+                  </Text>
+                </View>
+              )}
               {selectedAddressId === null && (
                 <View className="mt-4">
                   <TextInput
@@ -233,35 +265,33 @@ const Checkout = () => {
                   />
                 </View>
               )}
-              {selectedAddressId !== null && (
-                <Modal
-                  visible={isModalVisible}
-                  transparent={true}
-                  animationType="slide"
-                  onRequestClose={() => setIsModalVisible(false)}
-                >
-                  <View className="flex-1 justify-center items-center bg-black opacity-50">
-                    <View className="bg-white rounded-lg p-4 w-80">
-                      <Text className="text-xl font-bold mb-4">
-                        Select Address
+              <Modal
+                visible={isModalVisible}
+                transparent={false}
+                animationType="none"
+                onRequestClose={() => setIsModalVisible(false)}
+              >
+                <View className="flex-1 justify-center items-center bg-black opacity-50">
+                  <View className="bg-white rounded-lg p-4 w-80">
+                    <Text className="text-xl font-bold mb-4">
+                      Select Address
+                    </Text>
+                    <FlatList
+                      data={addressData?.data}
+                      keyExtractor={(item) => item._id}
+                      renderItem={renderAddressItem}
+                    />
+                    <TouchableOpacity
+                      onPress={() => setIsModalVisible(false)}
+                      className="bg-primary-300 p-3 rounded-full mt-4"
+                    >
+                      <Text className="text-white text-lg text-center">
+                        Close
                       </Text>
-                      <FlatList
-                        data={addressData?.data?.addresses}
-                        keyExtractor={(item) => item._id}
-                        renderItem={renderAddressItem}
-                      />
-                      <TouchableOpacity
-                        onPress={() => setIsModalVisible(false)}
-                        className="bg-primary-300 p-3 rounded-full mt-4"
-                      >
-                        <Text className="text-white text-lg text-center">
-                          Close
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                   </View>
-                </Modal>
-              )}
+                </View>
+              </Modal>
             </View>
 
             {/* Payment Method */}
@@ -288,22 +318,15 @@ const Checkout = () => {
             </View>
           </>
         }
-        ListFooterComponent={
-          <>
-            {/* Submit Button */}
-            <View className="px-4 mt-4">
-              <TouchableOpacity
-                onPress={handleSubmit}
-                className="bg-primary-300 p-4 rounded-full"
-              >
-                <Text className="text-white text-lg font-bold text-center">
-                  Confirm Order
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        }
       />
+      <TouchableOpacity
+        onPress={handleSubmit}
+        className="bg-primary-300 rounded-full p-4 m-4"
+      >
+        <Text className="text-white text-center text-xl font-bold">
+          Confirm Order
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
