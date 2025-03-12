@@ -10,7 +10,6 @@ import {
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "@/constants/icons";
-import { settings } from "@/constants/data";
 import { useRouter } from "expo-router";
 import avatar from "@/assets/images/avatar.jpg";
 import { useGetUserQuery } from "@/redux/api/userApiSlice";
@@ -55,9 +54,9 @@ const Profile = () => {
 
   // Gọi API lấy thông tin người dùng
   const { data, isLoading, error } = useGetUserQuery(userId);
-  const user = data?.data;
+  const user = data?.user;
   console.log('====================================');
-  console.log(userId);
+  console.log(data);
   console.log('====================================');
 
   // API logout

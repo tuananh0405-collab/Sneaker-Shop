@@ -35,37 +35,39 @@ const SignIn = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [userId, setUserId] = useState<string>("");
+
   useEffect(() => {
-    try {
-      const getUserId = async () => {
-        const refreshTokenRes = await refreshToken();
+    const getUserId = async () => {
+      try {
+        const storedAccessToken = await AsyncStorage.getItem("userInfo");
         console.log("====================================");
-        console.log(refreshTokenRes.data?.accessToken);
+        console.log(storedAccessToken);
         console.log("====================================");
-        const decodedToken = jwtDecode(refreshTokenRes.data?.accessToken);
-        const userId = decodedToken.userId;
-        setUserId(userId);
-        console.log("====================================");
-        console.log(userId);
-        console.log("====================================");
-      };
-      getUserId();
-    } catch (error) {}
+        if (storedAccessToken) {
+          const refreshTokenRes = await refreshToken();
+          const decodedToken = jwtDecode(refreshTokenRes.data?.accessToken);
+          const userId = decodedToken.userId;
+          setUserId(userId);
+        }else {
+          // Nếu không có token, yêu cầu người dùng đăng nhập lại
+          Alert.alert("Session expired", "Please log in again");
+          router.navigate("/sign-in"); // Điều hướng về trang đăng nhập
+        }
+      } catch (error) {}
+    };
+    getUserId();
   }, []);
-  const { data, isLoading2, error } = useGetUserQuery(userId, {
-    skip: !userId, // Chỉ gọi API khi có userId
+  const { data } = useGetUserQuery(userId, {
+    skip: !userId,
   });
-  console.log('====================================');
-  console.log(data);
-  console.log('====================================');
+
   useEffect(() => {
     if (data) {
-      dispatch(setCredentials(data)); // Cập nhật thông tin người dùng vào Redux
-      AsyncStorage.setItem("userInfo", JSON.stringify(data)); // Lưu thông tin vào AsyncStorage
-      router.navigate("/"); // Điều hướng đến trang chính
+      dispatch(setCredentials(data));
+      AsyncStorage.setItem("userInfo", JSON.stringify(data));
+      router.navigate("/");
     }
   }, [data]);
-  // Gọi API login
   const [login, { isLoading }] = useSignInMutation();
   const [refreshToken] = useRefreshTokenMutation();
   const handleEmailLogin = async () => {
