@@ -80,6 +80,10 @@ const Checkout = () => {
   };
 
   const handleSubmit = async () => {
+    if (!selectedAddressId && (!location || !fullName || !phone || !city)) {
+      Alert.alert("Please enter an address before submitting.");
+      return;
+    }
     // Dữ liệu đơn hàng
     const orderData = {
       orderItems: cart.map((item) => ({
