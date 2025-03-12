@@ -19,30 +19,65 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/redux/features/auth/authSlice";
 import { useGetUserQuery } from "@/redux/api/userApiSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSignInMutation } from "@/redux/api/authApiSlice";
+import {
+  useRefreshTokenMutation,
+  useSignInMutation,
+} from "@/redux/api/authApiSlice";
 import { RootState } from "@/redux/store";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import { AUTH_URL } from "@/redux/constant";
+import { jwtDecode } from "jwt-decode";
 
 const SignIn = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch();
-
+  const [userId, setUserId] = useState<string>("");
+  useEffect(() => {
+    try {
+      const getUserId = async () => {
+        const refreshTokenRes = await refreshToken();
+        console.log("====================================");
+        console.log(refreshTokenRes.data?.accessToken);
+        console.log("====================================");
+        const decodedToken = jwtDecode(refreshTokenRes.data?.accessToken);
+        const userId = decodedToken.userId;
+        setUserId(userId);
+        console.log("====================================");
+        console.log(userId);
+        console.log("====================================");
+      };
+      getUserId();
+    } catch (error) {}
+  }, []);
+  const { data, isLoading2, error } = useGetUserQuery(userId, {
+    skip: !userId, // Chỉ gọi API khi có userId
+  });
+  console.log('====================================');
+  console.log(data);
+  console.log('====================================');
+  useEffect(() => {
+    if (data) {
+      dispatch(setCredentials(data)); // Cập nhật thông tin người dùng vào Redux
+      AsyncStorage.setItem("userInfo", JSON.stringify(data)); // Lưu thông tin vào AsyncStorage
+      router.navigate("/"); // Điều hướng đến trang chính
+    }
+  }, [data]);
   // Gọi API login
   const [login, { isLoading }] = useSignInMutation();
-
+  const [refreshToken] = useRefreshTokenMutation();
   const handleEmailLogin = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Please enter email and password");
       return;
     }
-
     try {
       const response = await login({ email, password }).unwrap();
-      // setUserId(response.data.user._id); // Lưu userId để gọi API lấy thông tin user
-      dispatch(setCredentials(response.data)); // Lưu vào Redux
-      AsyncStorage.setItem("userInfo", JSON.stringify(response.data)); // Lưu vào AsyncStorage
-      router.navigate("/"); // Chuyển hướng sau khi đăng nhập
+      dispatch(setCredentials(response.data));
+      AsyncStorage.setItem("userInfo", JSON.stringify(response.data));
+      router.navigate("/");
     } catch (error) {
       Alert.alert(
         "Login Failed",
@@ -52,6 +87,47 @@ const SignIn = () => {
   };
 
   const handleLogin = () => {};
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId:
+      Platform.OS === "ios"
+        ? "1044561486659-ggn7l5c3ssilpp8fplbje1rao6ioem9k.apps.googleusercontent.com"
+        : "1044561486659-eah2vrju78d3vokpurb6rn02hh2vd1md.apps.googleusercontent.com",
+    redirectUri: "http://192.168.57.104:5500/api/v1/auth/google/callback",
+    scopes: ["profile", "email"],
+  });
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { authentication } = response;
+      if (authentication?.accessToken) {
+        handleGoogleLogin(authentication.accessToken);
+      }
+    }
+  }, [response]);
+
+  const handleGoogleLogin = async (token: string) => {
+    try {
+      const res = await fetch(`${AUTH_URL}/google`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        dispatch(setCredentials(data.user));
+        await AsyncStorage.setItem("userInfo", JSON.stringify(data.user));
+        router.navigate("/");
+      } else {
+        Alert.alert("Login Failed", "Could not authenticate with Google");
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Login Failed", "Something went wrong");
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -122,7 +198,7 @@ const SignIn = () => {
             </View>
             <View className="flex flex-row justify-center mt-2">
               <TouchableOpacity
-                onPress={handleLogin}
+                onPress={() => promptAsync()}
                 className="bg-white shadow-md shadow-zinc-300 rounded-full w-1/2 py-4 mx-2 flex-row items-center justify-center"
               >
                 <Image

@@ -11,11 +11,13 @@ interface User {
 interface AuthState {
   user: User | null;
   loading: boolean;
+  accessToken: string | null;
 }
 
 const initialState: AuthState = {
   user: null,
   loading: false,
+  accessToken:null
 };
 
 // Hàm load dữ liệu từ AsyncStorage
@@ -40,6 +42,9 @@ const authSlice = createSlice({
         console.error("Error saving user info:", err)
       );
     },
+    refreshAccessToken: (state, action: PayloadAction<string>) => {
+      state.accessToken = action.payload;
+    },
     logout: (state) => {
       state.user = null;
       AsyncStorage.removeItem("userInfo").catch((err) =>
@@ -49,5 +54,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials,refreshAccessToken, logout } = authSlice.actions;
 export default authSlice.reducer;

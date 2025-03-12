@@ -110,7 +110,7 @@ const Home = () => {
                     Good Morning
                   </Text>
                   <Text className="text-base font-rubik-medium text-black-300">
-                    {user?.user.name}
+                    {user?.user.name }
                   </Text>
                 </View>
               </View>

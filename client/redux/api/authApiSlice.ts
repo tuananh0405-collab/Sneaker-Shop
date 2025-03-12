@@ -29,12 +29,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: `${AUTH_URL}/sign-in`,
         method: "POST",
         body: data,
+        credentials: "include",
       }),
     }),
     signOut: builder.mutation<void, void>({
       query: () => ({
         url: `${AUTH_URL}/sign-out`,
         method: "POST",
+        credentials: "include",
         // cookie or not checked ?
       }),
     }),
@@ -46,7 +48,28 @@ export const authApiSlice = apiSlice.injectEndpoints({
         // cookie or not checked ?
       }),
     }),
+    refreshToken: builder.mutation<{ accessToken: string }, void>({
+      query: () => ({
+        url: `${AUTH_URL}/refresh-token`,
+        method: "POST",
+        credentials: "include", // Gửi cookie refreshJwt
+      }),
+    }),
+    googleLogin: builder.mutation<AuthResponse, { token: string }>({
+      query: (data) => ({
+        url: `${AUTH_URL}/google`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useSignUpMutation, useSignInMutation, useSignOutMutation, useVerifyEmailMutation } = authApiSlice;
+export const {
+  useSignUpMutation,
+  useSignInMutation,
+  useSignOutMutation,
+  useVerifyEmailMutation,
+  useRefreshTokenMutation,
+  useGoogleLoginMutation 
+} = authApiSlice;
