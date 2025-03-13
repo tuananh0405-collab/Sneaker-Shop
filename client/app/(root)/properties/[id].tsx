@@ -64,11 +64,12 @@ const Property = () => {
       Alert.alert("Please select both size and color");
       return;
     }
-  
+
     const selectedVariant = product?.variants.find(
-      (variant) => variant.size === selectedSize && variant.color === selectedColor
+      (variant) =>
+        variant.size === selectedSize && variant.color === selectedColor
     );
-  
+
     if (selectedVariant) {
       // Cấu trúc sản phẩm
       const cartItem: CartItem = {
@@ -80,7 +81,7 @@ const Property = () => {
         color: selectedColor,
         quantity: quantity,
       };
-  
+
       try {
         // Gọi API add to cart
         await addToCart({
@@ -89,10 +90,10 @@ const Property = () => {
           color: selectedColor,
           quantity: quantity,
         }).unwrap();
-  
+
         // Dispatch vào Redux store
         dispatch(addToCartState(cartItem));
-  
+
         Alert.alert("Added to cart");
       } catch (error) {
         Alert.alert("Failed to add to cart");
@@ -101,8 +102,40 @@ const Property = () => {
       Alert.alert("Variant not available");
     }
   };
-  
-  const handleBuyNow = () => {};
+
+  const handleBuyNow = () => {
+    if (!selectedSize || !selectedColor) {
+      Alert.alert("Please select both size and color");
+      return;
+    }
+
+    const selectedVariant = product?.variants.find(
+      (variant) =>
+        variant.size === selectedSize && variant.color === selectedColor
+    );
+
+    if (selectedVariant) {
+      const orderItems = [
+        {
+          product: product._id,
+          name: product.name,
+          image: product.images[0],
+          price: selectedVariant.price,
+          size: selectedSize,
+          color: selectedColor,
+          quantity: quantity,
+        },
+      ];
+
+      // Chuyển hướng đến trang CheckoutNow và truyền orderItems
+      router.push({
+        pathname: "/checkout-now",
+        params: { orderItems: JSON.stringify(orderItems) },
+      });
+    } else {
+      Alert.alert("Variant not available");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -202,25 +235,28 @@ const Property = () => {
 
           {/* Render size options from variants */}
           <View className="mt-5">
-  <Text className="text-black-300 text-sm font-rubik-bold">Sizes</Text>
-  <View className="flex flex-row gap-3 mt-2">
-    {[...new Set(product?.variants?.map((variant) => variant.size))].map((size, index) => (
-      <TouchableOpacity
-        key={index}
-        onPress={() => setSelectedSize(size)}
-        style={{
-          borderWidth: selectedSize === size ? 2 : 1,
-          borderColor: selectedSize === size ? "#0061ff" : "#ddd",
-          padding: 5,
-          borderRadius: 5,
-        }}
-      >
-        <Text className="text-black-300">{size}</Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-</View>
-
+            <Text className="text-black-300 text-sm font-rubik-bold">
+              Sizes
+            </Text>
+            <View className="flex flex-row gap-3 mt-2">
+              {[
+                ...new Set(product?.variants?.map((variant) => variant.size)),
+              ].map((size, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => setSelectedSize(size)}
+                  style={{
+                    borderWidth: selectedSize === size ? 2 : 1,
+                    borderColor: selectedSize === size ? "#0061ff" : "#ddd",
+                    padding: 5,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text className="text-black-300">{size}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
 
           {/* Lựa chọn số lượng */}
           <View className="mt-5">

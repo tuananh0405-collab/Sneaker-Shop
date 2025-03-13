@@ -95,6 +95,9 @@ const navigateToCart = () => {
 const navigateToUserDetail =()=>{
   router.push('/user')
 }
+const navigateToOrder =()=>{
+  router.push('/order')
+}
   return (
     <SafeAreaView className="h-full bg-white">
       <ScrollView
@@ -124,7 +127,7 @@ const navigateToUserDetail =()=>{
 
         <View className="flex flex-col mt-10">
           <SettingsItem icon={icons.cart} title="My Cart" onPress={navigateToCart}/>
-          <SettingsItem icon={icons.calendar} title="My Orders" />
+          <SettingsItem icon={icons.calendar} title="My Orders" onPress={navigateToOrder} />
           <SettingsItem icon={icons.wallet} title="Payments" />
         </View>
 

@@ -19,24 +19,29 @@ import {
 } from "@/redux/api/cartApiSlice";
 import icons from "@/constants/icons";
 import images from "@/constants/images";
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { removeFromCartState, setCart, updateCartState } from "@/redux/features/cart/cartSlice";
+import {
+  removeFromCartState,
+  setCart,
+  updateCartState,
+} from "@/redux/features/cart/cartSlice";
 
 const Cart = () => {
   // Fetch Cart Data
   // const { data, isLoading, error, refetch } = useGetCartQuery();
   const cartState = useSelector((state: RootState) => state.cart); // Lấy từ Redux
   const { data, isLoading, error, refetch } = useGetCartQuery(); // Lấy từ API
-  const cart = data?.data.cart 
+  const cart = data?.data.cart;
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   useEffect(() => {
     if (data?.data?.cart && data.data.cart.products) {
       dispatch(setCart(data.data.cart)); // Gán API vào Redux store
     }
   }, [data, dispatch]);
-  
+
   useEffect(() => {
     refetch(); // Gọi lại API khi Redux store thay đổi
   }, [cartState, refetch]);
@@ -148,7 +153,7 @@ const Cart = () => {
               renderItem={({ item }) => (
                 <View className="flex flex-row items-center justify-between mb-4 border-b border-gray-300 pb-2">
                   <Image
-                    source={{ uri: item.image[0] }}
+                    source={{ uri: item.image }}
                     className="w-16 h-16 rounded-md"
                   />
 
@@ -230,7 +235,10 @@ const Cart = () => {
           </View>
 
           <TouchableOpacity className="flex-1 flex flex-row items-center justify-center bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400">
-            <Text className="text-white text-lg text-center font-rubik-bold">
+            <Text
+              className="text-white text-lg text-center font-rubik-bold"
+              onPress={() => router.replace("/checkout")}
+            >
               Checkout Now
             </Text>
           </TouchableOpacity>

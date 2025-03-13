@@ -6,3 +6,6 @@ export const CART_URL: string = "/api/v1/cart";
 export const PRODUCT_URL: string = "/api/v1/product";
 export const ORDER_URL: string = "/api/v1/order";
 export const CATEGORY_URL: string = "/api/v1/category";
+export const COUPON_URL: string = "/api/v1/coupon";
+export const ADDRESS_URL: string = "/api/v1/address";
+export const CHECKOUT_URL: string = "/api/v1/checkout";
