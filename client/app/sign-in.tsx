@@ -82,15 +82,19 @@ const SignIn = () => {
   };
 
   const handleFaceBookLogin = () => {
-    Alert.alert("Facebook Login")
+    Alert.alert("Facebook Login");
   };
 
   const handleGoogleLogin = async () => {
     // Google sign-in logic goes here
-    Alert.alert("Google Login")
+    Alert.alert("Google Login");
   };
-  
 
+  const [isSecure, setIsSecure] = useState(true); // Trạng thái ẩn/hiện mật khẩu
+
+  const toggleSecureTextEntry = () => {
+    setIsSecure(!isSecure); // Chuyển đổi trạng thái ẩn/hiện mật khẩu
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -118,14 +122,26 @@ const SignIn = () => {
                 value={email}
                 onChangeText={setEmail}
               />
-              <TextInput
-                className="border border-gray-300 rounded-lg p-3 mt-2"
-                placeholderTextColor="gray"
-                placeholder="Password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-              />
+              <View className="relative">
+                <TextInput
+                  className="border border-gray-300 rounded-lg p-3 mt-2"
+                  placeholderTextColor="gray"
+                  placeholder="Password"
+                  secureTextEntry={isSecure}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <TouchableOpacity
+                  onPress={toggleSecureTextEntry}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                >
+                  <Image
+                    source={isSecure ? icons.eye_close : icons.eye_open} // Biểu tượng mắt đóng/mở
+                    style={{ width: 24, height: 24 }}
+                  />
+                </TouchableOpacity>
+              </View>
+
               <TouchableOpacity
                 onPress={handleEmailLogin}
                 className="bg-primary-300 rounded-md py-3 mt-4"

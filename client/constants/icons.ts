@@ -36,8 +36,12 @@ import cart from "@/assets/icons/cart.png";
 import color from "@/assets/icons/color.png";
 import gender from "@/assets/icons/gender.png";
 import trash from "@/assets/icons/trash.png";
+import eye_close from "@/assets/icons/eye_close.png";
+import eye_open from "@/assets/icons/eye_open.png";
 
 export default {
+  eye_close,
+  eye_open,
   trash,
   gender,
   color,

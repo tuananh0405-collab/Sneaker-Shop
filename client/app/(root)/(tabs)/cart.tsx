@@ -108,7 +108,7 @@ const Cart = () => {
       >
         <View className="relative w-full" style={{ height: windowHeight / 2 }}>
           <Image
-            source={images.japan}
+            source={images.onboarding}
             className="size-full"
             style={{ height: 450 }}
             resizeMode="cover"
@@ -118,7 +118,7 @@ const Cart = () => {
             className="z-50 absolute inset-x-7"
             style={{ top: Platform.OS === "ios" ? 70 : 20 }}
           >
-            <View className="flex flex-row items-center w-full justify-between">
+            {/* <View className="flex flex-row items-center w-full justify-between">
               <TouchableOpacity
                 onPress={() => router.replace("/profile")}
                 className="flex flex-row bg-primary-200 rounded-full size-11 items-center justify-center"
@@ -134,7 +134,7 @@ const Cart = () => {
                 />
                 <Image source={icons.send} className="size-7" />
               </View>
-            </View>
+            </View> */}
           </View>
         </View>
         <View className=" px-4">

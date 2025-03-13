@@ -72,6 +72,23 @@ const Home = () => {
 
   const products = data?.data.products || [];
 
+  const [greeting, setGreeting] = useState("");
+
+  useEffect(() => {
+    const currentHour = new Date().getHours();
+    let greetingMessage = "Good Morning";
+
+    if (currentHour >= 12 && currentHour < 18) {
+      greetingMessage = "Good Afternoon";
+    } else if (currentHour >= 18 && currentHour < 22) {
+      greetingMessage = "Good Evening";
+    } else if (currentHour >= 22 || currentHour < 6) {
+      greetingMessage = "Good Night";
+    }
+
+    setGreeting(greetingMessage);
+  }, []);
+
   return (
     <SafeAreaView className="h-full bg-white">
       <FlatList
@@ -107,14 +124,16 @@ const Home = () => {
                 />
                 <View className="flex flex-col items-start ml-2 justify-center">
                   <Text className="text-xs font-rubik text-black-100">
-                    Good Morning
+                    {greeting}
                   </Text>
                   <Text className="text-base font-rubik-medium text-black-300">
-                    {user?.user.name }
+                    {user?.user.name}
                   </Text>
                 </View>
               </View>
-              <Image source={icons.bell} className="size-6" />
+              <TouchableOpacity onPress={() => router.navigate("/cart")}>
+                <Image source={icons.cart} className="size-6" />
+              </TouchableOpacity>
             </View>
 
             <Search />
@@ -126,7 +145,7 @@ const Home = () => {
             <View className="my-5">
               <View className="flex flex-row items-center justify-between">
                 <Text className="text-xl font-rubik-bold text-black-300">
-                  Featured
+                  Hot Search
                 </Text>
                 <TouchableOpacity>
                   <Text
@@ -158,6 +177,10 @@ const Home = () => {
                   contentContainerClassName="flex gap-5 mt-5"
                 />
               )}
+
+              <Text className="text-xl font-rubik-bold text-black-300 mt-5">
+                All Products
+              </Text>
             </View>
           </View>
         )}

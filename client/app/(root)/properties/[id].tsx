@@ -7,6 +7,7 @@ import {
   Platform,
   TouchableOpacity,
   Alert,
+  FlatList,
 } from "react-native";
 import React, { useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
@@ -153,6 +154,7 @@ const Property = () => {
     );
   }
 
+
   return (
     <View>
       <ScrollView
@@ -191,7 +193,9 @@ const Property = () => {
           </View>
         </View>
 
-        <View className="px-5 mt-7 flex gap-2">
+
+
+        <View className="px-5 mt-2 flex gap-2">
           <Text className="text-2xl font-rubik-extrabold">{product?.name}</Text>
 
           <View className="flex flex-row items-center gap-3">

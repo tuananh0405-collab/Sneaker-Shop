@@ -106,7 +106,9 @@ const navigateToOrder =()=>{
       >
         <View className="flex flex-row items-center justify-between mt-5">
           <Text className="text-xl font-rubik-bold">Profile</Text>
-          <Image source={icons.bell} className="size-5" />
+           <TouchableOpacity onPress={()=>router.navigate('/cart')}>
+                          <Image source={icons.cart} className="size-6" />
+                        </TouchableOpacity>
         </View>
 
         <View className="flex flex-row justify-center mt-5">
@@ -126,7 +128,8 @@ const navigateToOrder =()=>{
         </View>
 
         <View className="flex flex-col mt-10">
-          <SettingsItem icon={icons.cart} title="My Cart" onPress={navigateToCart}/>
+          {/* <SettingsItem icon={icons.cart} title="My Cart" onPress={navigateToCart}/> */}
+          <SettingsItem icon={icons.bell} title="Notifications" onPress={()=>{}}/>
           <SettingsItem icon={icons.calendar} title="My Orders" onPress={navigateToOrder} />
           <SettingsItem icon={icons.wallet} title="Payments" />
         </View>

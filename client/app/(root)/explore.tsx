@@ -70,9 +70,11 @@ const Explore = () => {
               </TouchableOpacity>
 
               <Text className="text-base mr-2 text-center font-rubik-medium text-black-300">
-                Search for Your Ideal Cars
+                Search for Your Ideal Sneakers
               </Text>
-              <Image source={icons.bell} className="w-6 h-6" />
+              <TouchableOpacity onPress={()=>router.navigate('/cart')}>
+                                        <Image source={icons.cart} className="size-6" />
+                                      </TouchableOpacity>
             </View>
 
             <Search />
