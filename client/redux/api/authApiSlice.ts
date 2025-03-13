@@ -55,13 +55,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
         credentials: "include", // Gửi cookie refreshJwt
       }),
     }),
-    googleLogin: builder.mutation<AuthResponse, { token: string }>({
-      query: (data) => ({
-        url: `${AUTH_URL}/google`,
-        method: "POST",
-        body: data,
-      }),
-    }),
   }),
 });
 
@@ -70,6 +63,5 @@ export const {
   useSignInMutation,
   useSignOutMutation,
   useVerifyEmailMutation,
-  useRefreshTokenMutation,
-  useGoogleLoginMutation 
+  useRefreshTokenMutation 
 } = authApiSlice;

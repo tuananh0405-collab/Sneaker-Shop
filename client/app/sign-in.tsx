@@ -23,10 +23,6 @@ import {
   useRefreshTokenMutation,
   useSignInMutation,
 } from "@/redux/api/authApiSlice";
-import { RootState } from "@/redux/store";
-import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
-import { AUTH_URL } from "@/redux/constant";
 import { jwtDecode } from "jwt-decode";
 
 const SignIn = () => {
@@ -40,18 +36,15 @@ const SignIn = () => {
     const getUserId = async () => {
       try {
         const storedAccessToken = await AsyncStorage.getItem("userInfo");
-        console.log("====================================");
-        console.log(storedAccessToken);
-        console.log("====================================");
+
         if (storedAccessToken) {
           const refreshTokenRes = await refreshToken();
           const decodedToken = jwtDecode(refreshTokenRes.data?.accessToken);
           const userId = decodedToken.userId;
           setUserId(userId);
-        }else {
-          // Nếu không có token, yêu cầu người dùng đăng nhập lại
+        } else {
           Alert.alert("Session expired", "Please log in again");
-          router.navigate("/sign-in"); // Điều hướng về trang đăng nhập
+          router.navigate("/sign-in");
         }
       } catch (error) {}
     };
@@ -88,48 +81,15 @@ const SignIn = () => {
     }
   };
 
-  const handleLogin = () => {};
-
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId:
-      Platform.OS === "ios"
-        ? "1044561486659-ggn7l5c3ssilpp8fplbje1rao6ioem9k.apps.googleusercontent.com"
-        : "1044561486659-eah2vrju78d3vokpurb6rn02hh2vd1md.apps.googleusercontent.com",
-    redirectUri: "http://192.168.57.104:5500/api/v1/auth/google/callback",
-    scopes: ["profile", "email"],
-  });
-  useEffect(() => {
-    if (response?.type === "success") {
-      const { authentication } = response;
-      if (authentication?.accessToken) {
-        handleGoogleLogin(authentication.accessToken);
-      }
-    }
-  }, [response]);
-
-  const handleGoogleLogin = async (token: string) => {
-    try {
-      const res = await fetch(`${AUTH_URL}/google`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        dispatch(setCredentials(data.user));
-        await AsyncStorage.setItem("userInfo", JSON.stringify(data.user));
-        router.navigate("/");
-      } else {
-        Alert.alert("Login Failed", "Could not authenticate with Google");
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Login Failed", "Something went wrong");
-    }
+  const handleFaceBookLogin = () => {
+    Alert.alert("Facebook Login")
   };
+
+  const handleGoogleLogin = async () => {
+    // Google sign-in logic goes here
+    Alert.alert("Google Login")
+  };
+  
 
   return (
     <KeyboardAvoidingView
@@ -143,15 +103,11 @@ const SignIn = () => {
             resizeMode="contain"
           />
           <View className="px-10">
-            <Text className="text-base font-rubik text-center uppercase text-black-200">
-              Welcome to MMA
-            </Text>
             <Text className="text-3xl font-rubik-bold text-black-300 text-center mt-2">
               Let's Get You Closer to {"\n"}
-              <Text className="text-primary-300">Your Ideal Cars</Text>
+              <Text className="text-primary-300">Your Ideal Appearance</Text>
             </Text>
 
-            {/* Email Login Form */}
             <View className="mt-6">
               <TextInput
                 className="border border-gray-300 rounded-lg p-3 mt-2"
@@ -182,12 +138,13 @@ const SignIn = () => {
                   </Text>
                 )}
               </TouchableOpacity>
+
               <TouchableOpacity
-                onPress={() => router.navigate("/sign-up")}
-                className="bg-primary-300 rounded-md py-3 mt-4"
+                onPress={() => router.push("/sign-up")}
+                className="mt-4"
               >
-                <Text className="text-center text-white font-rubik-medium">
-                  Sign Up
+                <Text className="text-center text-primary-300">
+                  Not have an account? Sign Up
                 </Text>
               </TouchableOpacity>
             </View>
@@ -200,7 +157,7 @@ const SignIn = () => {
             </View>
             <View className="flex flex-row justify-center mt-2">
               <TouchableOpacity
-                onPress={() => promptAsync()}
+                onPress={handleGoogleLogin}
                 className="bg-white shadow-md shadow-zinc-300 rounded-full w-1/2 py-4 mx-2 flex-row items-center justify-center"
               >
                 <Image
@@ -214,7 +171,7 @@ const SignIn = () => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={handleLogin}
+                onPress={handleFaceBookLogin}
                 className="bg-white shadow-md shadow-zinc-300 rounded-full w-1/2 py-4 mx-2 flex-row items-center justify-center"
               >
                 <Image
