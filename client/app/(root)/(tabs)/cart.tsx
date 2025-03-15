@@ -216,7 +216,7 @@ const Cart = () => {
         </View>
       </ScrollView>
 
-      <View className="absolute bg-white bottom-0 w-full rounded-t-2xl border-t border-r border-l border-primary-200 p-7">
+      <View className="absolute bg-white bottom-20 w-full rounded-t-2xl border-t border-r border-l border-primary-200 p-7">
         <View className="flex flex-row items-center justify-between gap-10">
           <View className="flex flex-col items-start">
             <Text className="text-black-200 text-xs font-rubik-medium">

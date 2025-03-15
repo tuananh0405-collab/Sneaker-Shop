@@ -35,20 +35,27 @@
           "enableFullScreenImage_legacy": true
         }
       ],
-    
-    [
-      "expo-font",
-      {
-        "fonts":[
-          "./assets/fonts/Rubik_Bold.ttf",
-          "./assets/fonts/Rubik_ExtraBold.ttf",
-          "./assets/fonts/Medium.ttf",
-          "./assets/fonts/Rubik_Light.ttf",
-          "./assets/fonts/Rubik_Regular.ttf",
-          "./assets/fonts/Rubik_SemiBold.ttf"
-        ]
-      }
-    ]
+
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Rubik_Bold.ttf",
+            "./assets/fonts/Rubik_ExtraBold.ttf",
+            "./assets/fonts/Medium.ttf",
+            "./assets/fonts/Rubik_Light.ttf",
+            "./assets/fonts/Rubik_Regular.ttf",
+            "./assets/fonts/Rubik_SemiBold.ttf"
+          ]
+        }
+      ],
+
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.1044561486659-ggn7l5c3ssilpp8fplbje1rao6ioem9k"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

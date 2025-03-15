@@ -7,6 +7,7 @@ import {
   TextInput,
   Alert,
   Modal,
+  Linking,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,6 +20,8 @@ import { useGetAddressListQuery } from "@/redux/api/addressApiSlice";
 import { useCreateOrderNowMutation } from "@/redux/api/orderApiSlice";
 import { useCreatePaymentUrlMutation } from "@/redux/api/checkoutApiSlice";
 import { useLocalSearchParams } from "expo-router";
+import { WebView } from "react-native-webview";
+
 
 const CheckoutNow = () => {
   const router = useRouter();
@@ -173,6 +176,36 @@ const CheckoutNow = () => {
       </View>
     </View>
   );
+
+const returnUrl = "http://192.168.0.101:5500/api/v1/checkout/vnpay_return"; // Địa chỉ server trả về kết quả
+
+const handlePayment = async () => {
+  try {
+    const response = await fetch("http://192.168.0.101:5500/api/v1/checkout/create_payment_url", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: "200000",
+        bankCode: "",
+        language: "vn",
+      }),
+    });
+
+    const result = await response.json();
+    console.log('====================================');
+    console.log(result);
+    console.log('====================================');
+    if (result.code === "00" && result.data?.paymentUrl) {
+      Linking.openURL(result.data.paymentUrl);
+    } else {
+      Alert.alert("Lỗi", result.message || "Không thể tạo link thanh toán.");
+    }
+  } catch (error) {
+    Alert.alert("Lỗi", "Không thể kết nối đến server.");
+  }
+};
+
+
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -366,6 +399,15 @@ const CheckoutNow = () => {
           Confirm Order
         </Text>
       </TouchableOpacity>
+      {/* <TouchableOpacity
+        onPress={handlePayment}
+        className="bg-primary-300 rounded-full p-4 m-4"
+      >
+        <Text className="text-white text-center text-xl font-bold">
+          Open vnpay url
+        </Text>
+      </TouchableOpacity> */}
+      
     </SafeAreaView>
   );
 };

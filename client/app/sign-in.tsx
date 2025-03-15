@@ -84,6 +84,7 @@ const SignIn = () => {
   const handleFaceBookLogin = () => {
     Alert.alert("Facebook Login");
   };
+  
 
   const handleGoogleLogin = async () => {
     // Google sign-in logic goes here
