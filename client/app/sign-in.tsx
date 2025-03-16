@@ -72,6 +72,7 @@ const SignIn = () => {
       const response = await login({ email, password }).unwrap();
       dispatch(setCredentials(response.data));
       AsyncStorage.setItem("userInfo", JSON.stringify(response.data));
+      AsyncStorage.setItem("userEmail",email);
       router.navigate("/");
     } catch (error) {
       Alert.alert(

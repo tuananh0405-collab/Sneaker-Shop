@@ -38,7 +38,7 @@ import gender from "@/assets/icons/gender.png";
 import trash from "@/assets/icons/trash.png";
 import eye_close from "@/assets/icons/eye_close.png";
 import eye_open from "@/assets/icons/eye_open.png";
-
+import heart_card from "@/assets/icons/heart.card.png"
 export default {
   eye_close,
   eye_open,
@@ -80,4 +80,5 @@ export default {
   wifi,
   location,
   edit,
+  heart_card,
 };
