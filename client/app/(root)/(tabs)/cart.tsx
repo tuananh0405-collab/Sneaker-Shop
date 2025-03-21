@@ -102,10 +102,10 @@ const Cart = () => {
 
   return (
     <View className="flex-1 bg-white">
-      <ScrollView
+      {/* <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerClassName="pb-32 bg-white "
-      >
+      > */}
         <View className="relative w-full" style={{ height: windowHeight / 2 }}>
           <Image
             source={images.onboarding}
@@ -214,7 +214,7 @@ const Cart = () => {
             />
           )}
         </View>
-      </ScrollView>
+      {/* </ScrollView> */}
 
       <View className="absolute bg-white bottom-20 w-full rounded-t-2xl border-t border-r border-l border-primary-200 p-7">
         <View className="flex flex-row items-center justify-between gap-10">

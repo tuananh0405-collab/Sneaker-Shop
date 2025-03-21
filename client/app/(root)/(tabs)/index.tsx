@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
-import avatar from "@/assets/images/avatar.jpg";
+import people from "@/assets/icons/people.png";
 import { RootState } from "@/redux/store";
 
 const Home = () => {
@@ -113,7 +113,7 @@ const Home = () => {
             <View className="flex flex-row items-center justify-between mt-5">
               <View className="flex flex-row">
                 <Image
-                  source={avatar}
+                  source={people}
                   style={{
                     height: 40,
                     width: 40,

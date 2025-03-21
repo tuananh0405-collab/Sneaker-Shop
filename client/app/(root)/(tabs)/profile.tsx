@@ -11,7 +11,7 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "@/constants/icons";
 import { useRouter } from "expo-router";
-import avatar from "@/assets/images/avatar.jpg";
+import people from "@/assets/icons/people.png";
 import { useGetUserQuery } from "@/redux/api/userApiSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -114,7 +114,7 @@ const navigateToOrder =()=>{
         <View className="flex flex-row justify-center mt-5">
           <View className="flex flex-col items-center relative mt-5">
             <Image
-              source={avatar}
+              source={people}
               className="size-44 relative rounded-full"
             />
             <TouchableOpacity className="absolute bottom-11 right-2">

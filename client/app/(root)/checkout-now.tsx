@@ -22,7 +22,6 @@ import { useCreatePaymentUrlMutation } from "@/redux/api/checkoutApiSlice";
 import { useLocalSearchParams } from "expo-router";
 import { WebView } from "react-native-webview";
 
-
 const CheckoutNow = () => {
   const router = useRouter();
   const { orderItems: orderItemsParam } = useLocalSearchParams();
@@ -177,35 +176,39 @@ const CheckoutNow = () => {
     </View>
   );
 
-const returnUrl = "http://192.168.0.101:5500/api/v1/checkout/vnpay_return"; // Địa chỉ server trả về kết quả
+  const returnUrl =
+    "https://ef29-118-70-211-226.ngrok-free.app/api/v1/checkout/vnpay_return"; // Địa chỉ server trả về kết quả
+  // ngrok:  https://ef29-118-70-211-226.ngrok-free.app
 
-const handlePayment = async () => {
-  try {
-    const response = await fetch("http://192.168.0.101:5500/api/v1/checkout/create_payment_url", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        amount: "200000",
-        bankCode: "",
-        language: "vn",
-      }),
-    });
+  const handlePayment = async () => {
+    try {
+      const response = await fetch(
+        "http://172.20.10.9:5500/api/v1/checkout/create_payment_url",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: "200000",
+            bankCode: "",
+            language: "vn",
+            // returnUrl: returnUrl,
+          }),
+        }
+      );
 
-    const result = await response.json();
-    console.log('====================================');
-    console.log(result);
-    console.log('====================================');
-    if (result.code === "00" && result.data?.paymentUrl) {
-      Linking.openURL(result.data.paymentUrl);
-    } else {
-      Alert.alert("Lỗi", result.message || "Không thể tạo link thanh toán.");
+      const result = await response.json();
+      console.log("====================================");
+      console.log(result);
+      console.log("====================================");
+      if (result.code === "00" && result.data?.paymentUrl) {
+        Linking.openURL(result.data.paymentUrl);
+      } else {
+        Alert.alert("Lỗi", result.message || "Không thể tạo link thanh toán.");
+      }
+    } catch (error) {
+      Alert.alert("Lỗi", "Không thể kết nối đến server.");
     }
-  } catch (error) {
-    Alert.alert("Lỗi", "Không thể kết nối đến server.");
-  }
-};
-
-
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -225,7 +228,7 @@ const handlePayment = async () => {
 
             {/* Products List */}
             <View className="px-4">
-              <Text className="text-2xl font-bold mb-4">Your Order</Text>
+              <Text className="text-2xl font-bold mb-4">Your Order2</Text>
               <FlatList
                 data={orderItems}
                 keyExtractor={(item, index) => index.toString()}
@@ -399,15 +402,14 @@ const handlePayment = async () => {
           Confirm Order
         </Text>
       </TouchableOpacity>
-      {/* <TouchableOpacity
+      <TouchableOpacity
         onPress={handlePayment}
         className="bg-primary-300 rounded-full p-4 m-4"
       >
         <Text className="text-white text-center text-xl font-bold">
           Open vnpay url
         </Text>
-      </TouchableOpacity> */}
-      
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
