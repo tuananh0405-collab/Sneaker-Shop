@@ -54,6 +54,10 @@ const Checkout = () => {
   );
   const priceAfterDiscount = totalPrice * ((100 - discount) / 100);
 
+  const validCoupons =
+    couponsData?.data.coupons.filter(
+      (coupon) => new Date(coupon.expiry) > new Date()
+    ) || [];
   const handleCouponApply = () => {
     if (couponCode.trim() === "") {
       Alert.alert("Please enter a coupon code.");
@@ -67,7 +71,7 @@ const Checkout = () => {
       if (coupon) {
         setDiscount(coupon.discount);
         setCouponId(coupon._id);
-        Alert.alert(`Coupon applied! You saved ${coupon.discount}%.`);
+        Alert.alert(`Coupon applied!`);
       } else {
         Alert.alert("Error", "Could not fetch coupon data.");
       }
@@ -77,6 +81,13 @@ const Checkout = () => {
         "The coupon code you entered is not valid."
       );
     }
+  };
+
+  const handleApplyCoupon = (coupon) => {
+    setDiscount(coupon.discount);
+    setCouponId(coupon._id);
+
+    Alert.alert("Coupon applied!");
   };
 
   const handleSubmit = async () => {
@@ -173,6 +184,18 @@ const Checkout = () => {
     </View>
   );
 
+  const renderCouponItem = ({ item }: { item: any }) => (
+    <View className="flex flex-row items-center justify-between mb-2">
+      <Text>{item.name}</Text>
+      <TouchableOpacity
+        onPress={() => setCouponCode(item.name)}
+        className="bg-primary-300 p-2 rounded-lg"
+      >
+        <Text className="text-white">Apply</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <FlatList
@@ -199,23 +222,36 @@ const Checkout = () => {
               />
             </View>
 
+            {/* Coupon List */}
+            {validCoupons.length > 0 && (
+              <View className="px-4 mt-4">
+                <Text className="text-lg font-bold">Available Coupons</Text>
+                <FlatList
+                  data={validCoupons}
+                  keyExtractor={(item) => item._id}
+                  renderItem={({ item }) => (
+                    <View className="flex flex-row items-center justify-between mb-2 p-3 border-b border-gray-300">
+                      <Text>{item.name}</Text>
+                      <Text className="text-primary-300 font-bold">
+                        {item.discount}% Off
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => handleApplyCoupon(item)}
+                        className="bg-primary-300 p-2 rounded-lg"
+                      >
+                        <Text className="text-white">Apply</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                />
+              </View>
+            )}
+
             {/* Price and Discount */}
             <View className="px-4 mt-4">
               <Text className="text-lg font-medium">
                 Total Price: ${totalPrice}
               </Text>
-              <TextInput
-                placeholder="Enter Coupon Code"
-                value={couponCode}
-                onChangeText={setCouponCode}
-                className="border border-gray-300 rounded-lg p-2 mt-2"
-              />
-              <TouchableOpacity
-                onPress={handleCouponApply} // Simulate discount
-                className="bg-primary-300 rounded-lg p-2 mt-2"
-              >
-                <Text className="text-white text-center">Apply Discount</Text>
-              </TouchableOpacity>
               <Text className="text-lg font-medium mt-2">
                 Price After Discount: ${priceAfterDiscount}
               </Text>
@@ -272,6 +308,7 @@ const Checkout = () => {
               {selectedAddressId === null && (
                 <View className="mt-4">
                   <TextInput
+                    placeholderTextColor={"gray"}
                     placeholder="Full Name"
                     value={fullName}
                     onChangeText={setFullName}
@@ -279,24 +316,28 @@ const Checkout = () => {
                   />
                   <TextInput
                     placeholder="Phone"
+                    placeholderTextColor={"gray"}
                     value={phone}
                     onChangeText={setPhone}
                     className="border border-gray-300 rounded-lg p-2 mb-2"
                   />
                   <TextInput
                     placeholder="Location"
+                    placeholderTextColor={"gray"}
                     value={location}
                     onChangeText={setLocation}
                     className="border border-gray-300 rounded-lg p-2 mb-2"
                   />
                   <TextInput
                     placeholder="City"
+                    placeholderTextColor={"gray"}
                     value={city}
                     onChangeText={setCity}
                     className="border border-gray-300 rounded-lg p-2 mb-2"
                   />
                   <TextInput
                     placeholder="Country"
+                    placeholderTextColor={"gray"}
                     value={country}
                     onChangeText={setCountry}
                     className="border border-gray-300 rounded-lg p-2 mb-4"

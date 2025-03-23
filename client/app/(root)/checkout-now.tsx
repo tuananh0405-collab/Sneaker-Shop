@@ -60,6 +60,11 @@ const CheckoutNow = () => {
   );
   const priceAfterDiscount = totalPrice * ((100 - discount) / 100);
 
+  const validCoupons =
+    couponsData?.data.coupons.filter(
+      (coupon) => new Date(coupon.expiry) > new Date()
+    ) || [];
+
   const handleCouponApply = () => {
     if (couponCode.trim() === "") {
       Alert.alert("Please enter a coupon code.");
@@ -67,13 +72,13 @@ const CheckoutNow = () => {
     }
 
     if (couponsData) {
-      const coupon = couponsData.data.coupons.find(
+      const coupon = validCoupons.find(
         (c) => c.name.toLowerCase() === couponCode.trim().toLowerCase()
       );
       if (coupon) {
         setDiscount(coupon.discount);
         setCouponId(coupon._id);
-        Alert.alert(`Coupon applied! You saved ${coupon.discount}%.`);
+        Alert.alert(`Coupon applied!`);
       } else {
         Alert.alert("Error", "Could not fetch coupon data.");
       }
@@ -83,6 +88,13 @@ const CheckoutNow = () => {
         "The coupon code you entered is not valid."
       );
     }
+  };
+
+  const handleApplyCoupon = (coupon) => {
+    setDiscount(coupon.discount);
+    setCouponId(coupon._id);
+
+    Alert.alert("Coupon applied!");
   };
 
   const handleSubmit = async () => {
@@ -210,6 +222,18 @@ const CheckoutNow = () => {
     }
   };
 
+  const renderCouponItem = ({ item }: { item: any }) => (
+    <View className="flex flex-row items-center justify-between mb-2">
+      <Text>{item.name}</Text>
+      <TouchableOpacity
+        onPress={() => setCouponCode(item.name)}
+        className="bg-primary-300 p-2 rounded-lg"
+      >
+        <Text className="text-white">Apply</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <FlatList
@@ -236,24 +260,36 @@ const CheckoutNow = () => {
               />
             </View>
 
+            {/* Coupon List */}
+            {validCoupons.length > 0 && (
+              <View className="px-4 mt-4">
+                <Text className="text-lg font-bold">Available Coupons</Text>
+                <FlatList
+                  data={validCoupons}
+                  keyExtractor={(item) => item._id}
+                  renderItem={({ item }) => (
+                    <View className="flex flex-row items-center justify-between mb-2 p-3 border-b border-gray-300">
+                      <Text>{item.name}</Text>
+                      <Text className="text-primary-300 font-bold">
+                        {item.discount}% Off
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => handleApplyCoupon(item)}
+                        className="bg-primary-300 p-2 rounded-lg"
+                      >
+                        <Text className="text-white">Apply</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                />
+              </View>
+            )}
+
             {/* Price and Discount */}
             <View className="px-4 mt-4">
               <Text className="text-lg font-medium">
                 Total Price: ${totalPrice}
               </Text>
-              <TextInput
-                placeholder="Enter Coupon Code"
-                placeholderTextColor={"gray"}
-                value={couponCode}
-                onChangeText={setCouponCode}
-                className="border border-gray-300 rounded-lg p-2 mt-2"
-              />
-              <TouchableOpacity
-                onPress={handleCouponApply}
-                className="bg-primary-300 rounded-lg p-2 mt-2"
-              >
-                <Text className="text-white text-center">Apply Discount</Text>
-              </TouchableOpacity>
               <Text className="text-lg font-medium mt-2">
                 Price After Discount: ${priceAfterDiscount}
               </Text>
