@@ -1,46 +1,36 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BASE_URL } from "../constant";
+import { WishlistItem } from "@/interface";
 import { WISHLIST_URL } from "../constant";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiSlice } from "./apiSlice";
 
-export const wishlistApiSlice = createApi({
-  reducerPath: "wishlistApi",
-  baseQuery: async (args, api, extraOptions) => {
-    const userInfo = await AsyncStorage.getItem("userInfo");
-    if (!userInfo) {
-      throw new Error("No user information found");
-    }
-
-    const { accessToken } = JSON.parse(userInfo);
-
-    return fetchBaseQuery({
-      baseUrl: BASE_URL,
-      credentials: "include",
-      prepareHeaders: (headers) => {
-        if (accessToken) {
-          headers.set("Authorization", `Bearer ${accessToken}`);
-        }
-        return headers;
-      },
-    })(args, api, extraOptions);
-  },
+export const wishlistApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getWishlist: builder.query({
-      query: (email) => ({
-        url: `${WISHLIST_URL}/${email}`,
-      }),
+    getWishlist: builder.query<
+      {
+        data: {
+          wishlist: { _id: string; user: string; products: WishlistItem[] };
+        };
+      },
+      void
+    >({
+      query: () => ({ url: `${WISHLIST_URL}`, credentials: "include" }),
     }),
-    addToWishList: builder.mutation({
+    addToWishlist: builder.mutation<
+      void,
+      { productId: string; quantity: number }
+    >({
       query: (data) => ({
         url: `${WISHLIST_URL}/add`,
         method: "POST",
         body: data,
+        credentials: "include",
       }),
     }),
-    removeFromWishList: builder.mutation({
-      query: ({ productId, email }) => ({
-        url: `${WISHLIST_URL}/remove/${productId}/${email}`, // Use URL parameters
+    removeFromWishlist: builder.mutation<void, { productId: string }>({
+      query: (data) => ({
+        url: `${WISHLIST_URL}/remove`,
         method: "DELETE",
+        body: data,
+        credentials: "include",
       }),
     }),
   }),
@@ -48,6 +38,6 @@ export const wishlistApiSlice = createApi({
 
 export const {
   useGetWishlistQuery,
-  useAddToWishListMutation,
-  useRemoveFromWishListMutation,
+  useAddToWishlistMutation,
+  useRemoveFromWishlistMutation,
 } = wishlistApiSlice;

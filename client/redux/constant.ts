@@ -1,6 +1,5 @@
 // export const BASE_URL: string = "http://192.168.57.104:5500";
-// export const BASE_URL: string = "https://ef29-118-70-211-226.ngrok-free.app";
-export const BASE_URL: string = "http://172.20.10.9:5500";
+export const BASE_URL: string = "http://172.20.10.4:5500";
 // export const BASE_URL: string = "http://localhost:5500";
 export const AUTH_URL: string = "/api/v1/auth";
 export const USERS_URL: string = "/api/v1/users";

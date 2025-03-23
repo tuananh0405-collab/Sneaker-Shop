@@ -19,6 +19,8 @@ import { useGetProductQuery } from "@/redux/api/productApiSlice";
 import { useAddToCartMutation } from "@/redux/api/cartApiSlice"; // sử dụng hook addToCart
 import { addToCartState } from "@/redux/features/cart/cartSlice";
 import { AppDispatch } from "@/redux/store";
+import { useAddToWishlistMutation } from "@/redux/api/wishlistApiSlice";
+import { addToWishlistState } from "@/redux/features/wishlist/wishlistSlice";
 
 const Property = () => {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -34,7 +36,8 @@ const Property = () => {
   const product = data?.data.product;
 
   const [addToCart, { isLoading: isAdding }] = useAddToCartMutation(); // sử dụng hook addToCart
-
+  const [addToWishlist, { isLoading: isAddingToWishlist }] =
+    useAddToWishlistMutation();
   // const handleAddToCart = async () => {
   //   if (!selectedSize || !selectedColor) {
   //     Alert.alert("Please select both size and color");
@@ -104,6 +107,47 @@ const Property = () => {
     }
   };
 
+  const handleAddToWishlist = async () => {
+    if (!selectedSize || !selectedColor) {
+      Alert.alert("Please select both size and color");
+      return;
+    }
+
+    const selectedVariant = product?.variants.find(
+      (variant) =>
+        variant.size === selectedSize && variant.color === selectedColor
+    );
+
+    if (selectedVariant) {
+      // Cấu trúc sản phẩm
+      const wishlistItem: WishlistItem = {
+        product: product._id,
+        name: product.name,
+        image: product.images[0],
+        price: selectedVariant.price,
+        size: selectedSize,
+        color: selectedColor,
+      };
+
+      try {
+        await addToWishlist({
+          productId: product._id,
+          size: selectedSize,
+          color: selectedColor,
+        }).unwrap();
+
+        // Dispatch vào Redux store
+        dispatch(addToWishlistState(wishlistItem));
+
+        Alert.alert("Added to wishlist");
+      } catch (error) {
+        Alert.alert("Failed to add to wishlist");
+      }
+    } else {
+      Alert.alert("Variant not available");
+    }
+  };
+
   const handleBuyNow = () => {
     if (!selectedSize || !selectedColor) {
       Alert.alert("Please select both size and color");
@@ -154,7 +198,6 @@ const Property = () => {
     );
   }
 
-
   return (
     <View>
       <ScrollView
@@ -182,18 +225,18 @@ const Property = () => {
               </TouchableOpacity>
 
               <View className="flex flex-row items-center gap-3">
-                <Image
-                  source={icons.heart}
-                  className="size-7"
-                  tintColor={"#191D31"}
-                />
+                <TouchableOpacity onPress={handleAddToWishlist}>
+                  <Image
+                    source={icons.heart}
+                    className="size-7"
+                    tintColor={"#191D31"}
+                  />
+                </TouchableOpacity>
                 <Image source={icons.send} className="size-7" />
               </View>
             </View>
           </View>
         </View>
-
-
 
         <View className="px-5 mt-2 flex gap-2">
           <Text className="text-2xl font-rubik-extrabold">{product?.name}</Text>
