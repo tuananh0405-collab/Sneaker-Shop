@@ -228,7 +228,7 @@ const CheckoutNow = () => {
 
             {/* Products List */}
             <View className="px-4">
-              <Text className="text-2xl font-bold mb-4">Your Order2</Text>
+              <Text className="text-2xl font-bold mb-4">Your Order</Text>
               <FlatList
                 data={orderItems}
                 keyExtractor={(item, index) => index.toString()}
@@ -243,6 +243,7 @@ const CheckoutNow = () => {
               </Text>
               <TextInput
                 placeholder="Enter Coupon Code"
+                placeholderTextColor={"gray"}
                 value={couponCode}
                 onChangeText={setCouponCode}
                 className="border border-gray-300 rounded-lg p-2 mt-2"
@@ -309,6 +310,7 @@ const CheckoutNow = () => {
               {selectedAddressId === null && (
                 <View className="mt-4">
                   <TextInput
+                    placeholderTextColor={"gray"}
                     placeholder="Full Name"
                     value={fullName}
                     onChangeText={setFullName}
@@ -316,24 +318,28 @@ const CheckoutNow = () => {
                   />
                   <TextInput
                     placeholder="Phone"
+                    placeholderTextColor={"gray"}
                     value={phone}
                     onChangeText={setPhone}
                     className="border border-gray-300 rounded-lg p-2 mb-2"
                   />
                   <TextInput
                     placeholder="Location"
+                    placeholderTextColor={"gray"}
                     value={location}
                     onChangeText={setLocation}
                     className="border border-gray-300 rounded-lg p-2 mb-2"
                   />
                   <TextInput
                     placeholder="City"
+                    placeholderTextColor={"gray"}
                     value={city}
                     onChangeText={setCity}
                     className="border border-gray-300 rounded-lg p-2 mb-2"
                   />
                   <TextInput
                     placeholder="Country"
+                    placeholderTextColor={"gray"}
                     value={country}
                     onChangeText={setCountry}
                     className="border border-gray-300 rounded-lg p-2 mb-4"

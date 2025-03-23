@@ -84,9 +84,17 @@ const Profile = () => {
     console.log(error);
     console.log('====================================');
     return (
-      <View className="flex-1 justify-center items-center">
-        <Text className="text-red-500">Error loading profile</Text>
-      </View>
+       <View className="flex-1 justify-center items-center">
+              <Text className="text-red-500 mb-10">Failed to load profile. Make sure that you are logged in</Text>
+              {/* <TouchableOpacity className="flex-1 flex flex-row items-center justify-center bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400"> */}
+                  <Text
+                    className="text-white text-lg text-center font-rubik-bold bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400 px-5"
+                    onPress={() => router.replace("/sign-in")}
+                  >
+                    Log In
+                  </Text>
+                {/* </TouchableOpacity> */}
+            </View>
     );
   }
 const navigateToCart = () => {
