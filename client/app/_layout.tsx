@@ -21,7 +21,7 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
   return (
     <Provider store={store}>
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false, gestureEnabled:false }} />
     </Provider>
   );
 }

@@ -9,7 +9,7 @@ import {
   Modal,
   Linking,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -21,6 +21,7 @@ import { useCreateOrderNowMutation } from "@/redux/api/orderApiSlice";
 import { useCreatePaymentUrlMutation } from "@/redux/api/checkoutApiSlice";
 import { useLocalSearchParams } from "expo-router";
 import { WebView } from "react-native-webview";
+import { BASE_URL } from "@/redux/constant";
 
 const CheckoutNow = () => {
   const router = useRouter();
@@ -60,6 +61,11 @@ const CheckoutNow = () => {
   );
   const priceAfterDiscount = totalPrice * ((100 - discount) / 100);
 
+  const validCoupons =
+    couponsData?.data.coupons.filter(
+      (coupon) => new Date(coupon.expiry) > new Date()
+    ) || [];
+
   const handleCouponApply = () => {
     if (couponCode.trim() === "") {
       Alert.alert("Please enter a coupon code.");
@@ -67,13 +73,13 @@ const CheckoutNow = () => {
     }
 
     if (couponsData) {
-      const coupon = couponsData.data.coupons.find(
+      const coupon = validCoupons.find(
         (c) => c.name.toLowerCase() === couponCode.trim().toLowerCase()
       );
       if (coupon) {
         setDiscount(coupon.discount);
         setCouponId(coupon._id);
-        Alert.alert(`Coupon applied! You saved ${coupon.discount}%.`);
+        Alert.alert(`Coupon applied!`);
       } else {
         Alert.alert("Error", "Could not fetch coupon data.");
       }
@@ -83,6 +89,13 @@ const CheckoutNow = () => {
         "The coupon code you entered is not valid."
       );
     }
+  };
+
+  const handleApplyCoupon = (coupon) => {
+    setDiscount(coupon.discount);
+    setCouponId(coupon._id);
+
+    Alert.alert("Coupon applied!");
   };
 
   const handleSubmit = async () => {
@@ -176,30 +189,23 @@ const CheckoutNow = () => {
     </View>
   );
 
-  const returnUrl =
-    "https://ef29-118-70-211-226.ngrok-free.app/api/v1/checkout/vnpay_return"; // Địa chỉ server trả về kết quả
-  // ngrok:  https://ef29-118-70-211-226.ngrok-free.app
-
   const handlePayment = async () => {
     try {
       const response = await fetch(
-        "http://172.20.10.9:5500/api/v1/checkout/create_payment_url",
+        `${BASE_URL}/api/v1/checkout/create_payment_url`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount: "200000",
+            amount: priceAfterDiscount*1000,
             bankCode: "",
             language: "vn",
-            // returnUrl: returnUrl,
+            
           }),
         }
       );
 
       const result = await response.json();
-      console.log("====================================");
-      console.log(result);
-      console.log("====================================");
       if (result.code === "00" && result.data?.paymentUrl) {
         Linking.openURL(result.data.paymentUrl);
       } else {
@@ -209,6 +215,44 @@ const CheckoutNow = () => {
       Alert.alert("Lỗi", "Không thể kết nối đến server.");
     }
   };
+
+  useEffect(() => {
+    const handleUrl = (url) => {
+      // Kiểm tra xem URL có chứa custom scheme của ứng dụng không
+      if (url.includes("yourapp://payment")) {
+        const params = new URLSearchParams(url.split('?')[1]);
+        const status = params.get('status');
+        const message = params.get('message');
+  
+        if (status === 'success') {
+          Alert.alert("Thanh toán thành công", message);
+          // Điều hướng đến trang đơn hàng
+          router.push("/order");
+        } else {
+          Alert.alert("Thanh toán thất bại", message);
+          // Điều hướng về trang giỏ hàng
+          router.push("/cart");
+        }
+      }
+    };
+  
+    // Lắng nghe khi ứng dụng được mở từ URL
+    const subscription = Linking.addEventListener('url', (event) => handleUrl(event.url));
+  
+    // Kiểm tra nếu ứng dụng được mở từ URL scheme khi đang ở background
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        handleUrl(url);
+      }
+    });
+  
+    // Dọn dẹp khi component unmounts
+    return () => {
+      subscription.remove();  // Hủy sự kiện
+    };
+  }, []);
+  
+
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -236,24 +280,36 @@ const CheckoutNow = () => {
               />
             </View>
 
+            {/* Coupon List */}
+            {validCoupons.length > 0 && (
+              <View className="px-4 mt-4">
+                <Text className="text-lg font-bold">Available Coupons</Text>
+                <FlatList
+                  data={validCoupons}
+                  keyExtractor={(item) => item._id}
+                  renderItem={({ item }) => (
+                    <View className="flex flex-row items-center justify-between mb-2 p-3 border-b border-gray-300">
+                      <Text>{item.name}</Text>
+                      <Text className="text-primary-300 font-bold">
+                        {item.discount}% Off
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => handleApplyCoupon(item)}
+                        className="bg-primary-300 p-2 rounded-lg"
+                      >
+                        <Text className="text-white">Apply</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                />
+              </View>
+            )}
+
             {/* Price and Discount */}
             <View className="px-4 mt-4">
               <Text className="text-lg font-medium">
                 Total Price: ${totalPrice}
               </Text>
-              <TextInput
-                placeholder="Enter Coupon Code"
-                placeholderTextColor={"gray"}
-                value={couponCode}
-                onChangeText={setCouponCode}
-                className="border border-gray-300 rounded-lg p-2 mt-2"
-              />
-              <TouchableOpacity
-                onPress={handleCouponApply}
-                className="bg-primary-300 rounded-lg p-2 mt-2"
-              >
-                <Text className="text-white text-center">Apply Discount</Text>
-              </TouchableOpacity>
               <Text className="text-lg font-medium mt-2">
                 Price After Discount: ${priceAfterDiscount}
               </Text>

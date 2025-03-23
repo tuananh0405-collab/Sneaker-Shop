@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/shoes.png",
-    "scheme": "restate",
+    "scheme": "yourapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -57,6 +57,17 @@
         }
       ]
     ],
+    "expo-font": {
+  "fonts": {
+    "Rubik-Bold": "./assets/fonts/Rubik_Bold.ttf",
+    "Rubik-ExtraBold": "./assets/fonts/Rubik_ExtraBold.ttf",
+    "Rubik-Medium": "./assets/fonts/Medium.ttf",
+    "Rubik-Light": "./assets/fonts/Rubik_Light.ttf",
+    "Rubik-Regular": "./assets/fonts/Rubik_Regular.ttf",
+    "Rubik-SemiBold": "./assets/fonts/Rubik_SemiBold.ttf"
+  }
+}
+,
     "experiments": {
       "typedRoutes": true
     }
