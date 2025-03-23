@@ -65,6 +65,16 @@ const TabsLayout = () => {
           ),
         }}
       />
+        <Tabs.Screen
+        name="wishlist"
+        options={{
+          title: "Wishlist",
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon={icons.heart} title="Wishlist" focused={focused} />
+          ),
+        }}
+      />
       {/* <Tabs.Screen
         name="explore"
         options={{
