@@ -35,11 +35,11 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    resetPassword: builder.mutation<void, { token: string; newPassword: string }>({
-      query: ({ token, newPassword }) => ({
+    resetPassword: builder.mutation<void, { token: string; password: string }>({
+      query: ({ token, password }) => ({
         url: `${USERS_URL}/reset_password/${token}`,
         method: "POST",
-        body: { newPassword },
+        body: { password },
       }),
     }),
   }),
