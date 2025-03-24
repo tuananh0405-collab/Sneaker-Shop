@@ -13,9 +13,10 @@ import icons from "@/constants/icons";
 import { useRouter } from "expo-router";
 import people from "@/assets/icons/people.png";
 import { useGetUserQuery } from "@/redux/api/userApiSlice";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { useSignOutMutation } from "@/redux/api/authApiSlice";
+import { logout } from "@/redux/features/auth/authSlice";
 
 interface SettingsItemProp {
   icon: ImageSourcePropType;
@@ -50,6 +51,7 @@ const SettingsItem = ({
 const Profile = () => {
   const router = useRouter();
   const userInfo = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useDispatch<AppDispatch>()
   const userId = userInfo?.user?._id;
 
   // Gọi API lấy thông tin người dùng
@@ -65,6 +67,7 @@ const Profile = () => {
   const handleLogout = async () => {
     try {
       await logout().unwrap();
+      // dispatch(logout())
       router.replace("/sign-in");
     } catch (error) {
       Alert.alert("Logout Failed");
@@ -137,14 +140,14 @@ const navigateToOrder =()=>{
 
         <View className="flex flex-col mt-10">
           {/* <SettingsItem icon={icons.cart} title="My Cart" onPress={navigateToCart}/> */}
-          <SettingsItem icon={icons.bell} title="Notifications" onPress={()=>{}}/>
+          {/* <SettingsItem icon={icons.bell} title="Notifications" onPress={()=>{}}/> */}
           <SettingsItem icon={icons.calendar} title="My Orders" onPress={navigateToOrder} />
-          <SettingsItem icon={icons.wallet} title="Payments" />
+          {/* <SettingsItem icon={icons.wallet} title="Payments" /> */}
         </View>
 
         <View className="flex flex-col mt-5 border-t pt-5 border-primary-200">
 
-          <SettingsItem icon={icons.person} title="Profile" onPress={navigateToUserDetail}/>
+          <SettingsItem icon={icons.person} title="Profile Detail" onPress={navigateToUserDetail}/>
           <SettingsItem icon={icons.language} title="Language" />
           <SettingsItem icon={icons.info} title="Help Center" />
 

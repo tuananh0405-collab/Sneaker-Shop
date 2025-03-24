@@ -6,6 +6,9 @@ import { RootState } from "@/redux/store";
 
 export default function AppLayout() {
   const { loading, user } = useSelector((state: RootState) => state.auth);
+  console.log('====================================');
+  console.log(user);
+  console.log('====================================');
 
   if (loading) {
     return (

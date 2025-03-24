@@ -217,6 +217,8 @@ const SignIn = () => {
                 </Text>
               </TouchableOpacity>
             </View>
+
+{/* Oauth 
             <View className={"flex-row items-center my-4"}>
               <View className={"flex-1 border-b border-gray-400"} />
               <Text className={"mx-4 text-lg text-gray-600 font-rubik"}>
@@ -253,6 +255,7 @@ const SignIn = () => {
                 </Text>
               </TouchableOpacity>
             </View>
+*/}
             
             <Modal
               visible={isModalVisible}

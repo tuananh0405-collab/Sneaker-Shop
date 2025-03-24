@@ -7,6 +7,8 @@ import {
   ActivityIndicator,
   Alert,
   ScrollView,
+  Image,
+  Platform,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { useRouter } from "expo-router";
@@ -16,6 +18,7 @@ import {
 } from "@/redux/api/userApiSlice";
 import { RootState } from "@/redux/store";
 import { SafeAreaView } from "react-native-safe-area-context";
+import icons from "@/constants/icons";
 
 const User = () => {
   const router = useRouter();
@@ -24,8 +27,10 @@ const User = () => {
 
   // Lấy dữ liệu user từ API
   const { data, isLoading, error } = useGetUserQuery(userId);
-  const user = data?.data;
-
+  const user = data?.user;
+  console.log("====================================");
+  console.log(data);
+  console.log("====================================");
   // State để chỉnh sửa thông tin user
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -82,6 +87,19 @@ const User = () => {
   return (
     <SafeAreaView className="h-full bg-white">
       <ScrollView className="flex-1 bg-white p-6">
+        {/* <View
+          className="z-50 absolute inset-x-7"
+          style={{ top: Platform.OS === "ios" ? 70 : 20 }}
+        > */}
+          <View className="flex flex-row items-center w-full justify-between">
+            <TouchableOpacity
+              onPress={() => router.navigate('/profile')}
+              className="flex flex-row bg-primary-200 rounded-full size-11 items-center justify-center"
+            >
+              <Image source={icons.backArrow} className="size-5" />
+            </TouchableOpacity>
+          </View>
+        {/* </View> */}
         <Text className="text-2xl font-bold text-center text-gray-900 mb-6">
           User Details
         </Text>
@@ -91,7 +109,7 @@ const User = () => {
           <Text className="text-gray-700 mb-1">Name</Text>
           <TextInput
             className="border border-gray-300 rounded-lg p-3"
-            placeholder="Enter name"
+            placeholder={name}
             placeholderTextColor="gray"
             value={name}
             onChangeText={setName}

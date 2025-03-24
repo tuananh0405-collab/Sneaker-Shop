@@ -232,7 +232,7 @@ const Property = () => {
                     tintColor={"#191D31"}
                   />
                 </TouchableOpacity>
-                <Image source={icons.send} className="size-7" />
+                {/* <Image source={icons.send} className="size-7" /> */}
               </View>
             </View>
           </View>

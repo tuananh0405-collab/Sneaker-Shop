@@ -441,15 +441,15 @@ const CheckoutNow = () => {
                     paymentMethod === "COD" ? "bg-primary-300" : ""
                   }`}
                 >
-                  <Text className="text-center">COD</Text>
+                  <Text  className={`text-center ${paymentMethod==="COD"?"text-white":""}`}>COD</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => setPaymentMethod("VNPAY")}
                   className={`bg-gray-200 p-3 rounded-lg flex-1 ml-2 ${
-                    paymentMethod === "VNPAY" ? "bg-primary-300" : ""
+                    paymentMethod === "VNPAY" ? "bg-primary-300 " : ""
                   }`}
                 >
-                  <Text className="text-center">VNPAY</Text>
+                  <Text className={`text-center ${paymentMethod==="VNPAY"?"text-white":""}`}>VNPAY</Text>
                 </TouchableOpacity>
               </View>
             </View>
