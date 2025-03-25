@@ -11,6 +11,19 @@ interface ProductFilters {
   limit?: number;
 }
 
+interface ProductRecommend {
+  userId: string;
+  inputLimit?: number;
+  recommendQuantity?: number;
+}
+
+interface ProductRecommendWithReason {
+  userId?: string;
+  inputLimit?: number;
+  recommendQuantity?: number;
+  description: string;
+}
+
 export const productApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query<{ data: Product[] }, ProductFilters>({
@@ -55,7 +68,38 @@ export const productApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    getRecommendedProductsAuto: builder.query<
+      { data: Product[] },
+      ProductRecommend
+    >({
+      query: ({ userId, inputLimit = 50, recommendQuantity = 5 }) => ({
+        url: `${PRODUCT_URL}/suggest-auto?userId=${userId}&inputLimit=${inputLimit}&recommendQuantity=${recommendQuantity}`,
+        credentials: "include",
+        method: "GET",
+      }),
+    }),
+    getRecommendedProductsWithReason: builder.query<
+      { data: Product[] },
+      ProductRecommendWithReason
+    >({
+      query: ({
+        userId,
+        inputLimit = 50,
+        recommendQuantity = 5,
+        description,
+      }) => ({
+        url: `${PRODUCT_URL}/suggest-reason?userId=${userId}&inputLimit=${inputLimit}&recommendQuantity=${recommendQuantity}&description=${description}`,
+        credentials: "include",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetProductsQuery, useGetProductQuery } = productApiSlice;
+export const {
+  useGetProductsQuery,
+  useGetProductQuery,
+  useGetRecommendedProductsAutoQuery,
+  useLazyGetRecommendedProductsWithReasonQuery,
+} = productApiSlice;

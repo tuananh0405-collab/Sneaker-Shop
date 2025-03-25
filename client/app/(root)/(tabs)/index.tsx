@@ -3,7 +3,10 @@ import Filters from "@/components/Filters";
 import NoResults from "@/components/NoResults";
 import Search from "@/components/Search";
 import icons from "@/constants/icons";
-import { useGetProductsQuery } from "@/redux/api/productApiSlice";
+import {
+  useGetProductsQuery,
+  useGetRecommendedProductsAutoQuery,
+} from "@/redux/api/productApiSlice";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -31,6 +34,7 @@ const Home = () => {
   }>();
   const handleCardPress = (id: string) => router.push(`/properties/${id}`);
   const handleSeeAll = () => router.push("/explore");
+  const handleAdvanceRecommend = () => router.push("/advance-recommend");
 
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -47,6 +51,16 @@ const Home = () => {
 
   // Gọi API sản phẩm dựa vào `filters`
   const { data, isLoading, error, refetch } = useGetProductsQuery(filters);
+
+  const {
+    data: recommendData,
+    isLoading: isLoadingRecommend,
+    error: errorRecommend,
+    refetch: refetchRecommend,
+  } = useGetRecommendedProductsAutoQuery(
+    { userId: user?.user?._id || "" }
+    // { skip: !user?._id } // Skip fetching if user is not logged in
+  );
 
   // Cập nhật `filters` khi params thay đổi
   useEffect(() => {
@@ -71,7 +85,7 @@ const Home = () => {
   ]);
 
   const products = data?.data.products || [];
-
+  const recommendedProducts = recommendData?.data.recommendedProducts || [];
   const [greeting, setGreeting] = useState("");
 
   useEffect(() => {
@@ -95,7 +109,10 @@ const Home = () => {
         data={products}
         numColumns={2}
         renderItem={({ item }) => (
-          <Card item={item} onPress={() => handleCardPress(item._id)} />
+          <Card
+            item={item}
+            onPress={() => handleCardPress(item._id)}
+          />
         )}
         keyExtractor={(item) => item._id.toString()}
         contentContainerClassName="pb-32"
@@ -103,7 +120,10 @@ const Home = () => {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           isLoading ? (
-            <ActivityIndicator size="large" className="text-primary-300 mt-5" />
+            <ActivityIndicator
+              size="large"
+              className="text-primary-300 mt-5"
+            />
           ) : (
             <NoResults />
           )
@@ -132,7 +152,10 @@ const Home = () => {
                 </View>
               </View>
               <TouchableOpacity onPress={() => router.navigate("/cart")}>
-                <Image source={icons.cart} className="size-6" />
+                <Image
+                  source={icons.cart}
+                  className="size-6"
+                />
               </TouchableOpacity>
             </View>
 
@@ -143,6 +166,50 @@ const Home = () => {
             </View>
 
             <View className="my-5">
+              {user && (
+                <View className="mb-5">
+                  <View className="flex flex-row items-center justify-between mt-5">
+                    <Text className="text-xl font-rubik-bold text-black-300">
+                      Recommended for {user?.user.name}
+                    </Text>
+                    <TouchableOpacity>
+                      <Text
+                        className="text-base font-rubik-bold text-primary-300"
+                        onPress={handleAdvanceRecommend}
+                      >
+                        Advance Recommend
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {isLoadingRecommend ? (
+                    <ActivityIndicator
+                      size="large"
+                      className="text-primary-300"
+                    />
+                  ) : recommendedProducts.length > 0 ? (
+                    <FlatList
+                      data={recommendedProducts}
+                      renderItem={({ item }) => (
+                        <Card
+                          item={item}
+                          onPress={() => handleCardPress(item._id)}
+                        />
+                      )}
+                      keyExtractor={(item) => item._id}
+                      horizontal
+                      bounces={false}
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerClassName="flex gap-5"
+                    />
+                  ) : (
+                    <Text className="text-base text-gray-400 mt-2">
+                      No trending products available.
+                    </Text>
+                  )}
+                </View>
+              )}
+
               <View className="flex flex-row items-center justify-between">
                 <Text className="text-xl font-rubik-bold text-black-300">
                   Hot Search
@@ -158,7 +225,10 @@ const Home = () => {
               </View>
 
               {isLoading ? (
-                <ActivityIndicator size="large" className="text-primary-300" />
+                <ActivityIndicator
+                  size="large"
+                  className="text-primary-300"
+                />
               ) : products.length === 0 ? (
                 <NoResults />
               ) : (
