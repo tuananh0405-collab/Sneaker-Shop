@@ -197,6 +197,8 @@ const Search = () => {
                       <Text className="text-black text-lg font-rubik-semibold mb-2">
                         Price Range
                       </Text>
+                      <View className="flex flex-row justify-around">
+
                       <TextInput
                         placeholder="Min Price"
                         placeholderTextColor={"gray"}
@@ -210,9 +212,11 @@ const Search = () => {
                         placeholderTextColor={"gray"}
                         value={maxPrice}
                         onChangeText={setMaxPrice}
-                        className="border border-primary-200 p-3 rounded-md"
+                        className="border border-primary-200 p-3 rounded-md mb-4"
                         style={{ fontSize: 16 }}
                       />
+                      </View>
+
                     </View>
 
                     {/* Buttons */}

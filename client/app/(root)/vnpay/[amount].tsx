@@ -206,7 +206,8 @@ const Test = () => {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+
+            {/* <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={{
                 backgroundColor: "#f44336",
@@ -217,7 +218,8 @@ const Test = () => {
               }}
             >
               <Text style={{ color: "white", fontSize: 16 }}>Đóng</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
           </View>
         </View>
       </Modal>

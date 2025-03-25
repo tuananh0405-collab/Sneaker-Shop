@@ -170,14 +170,14 @@ const Home = () => {
                 <View className="mb-5">
                   <View className="flex flex-row items-center justify-between mt-5">
                     <Text className="text-xl font-rubik-bold text-black-300">
-                      Recommended for {user?.user.name}
+                      Recommended for {user?.user.name.split(" ")[0]}
                     </Text>
                     <TouchableOpacity>
                       <Text
                         className="text-base font-rubik-bold text-primary-300"
                         onPress={handleAdvanceRecommend}
                       >
-                        Advance Recommend
+                        Advance
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -191,7 +191,7 @@ const Home = () => {
                     <FlatList
                       data={recommendedProducts}
                       renderItem={({ item }) => (
-                        <Card
+                        <FeaturedCard
                           item={item}
                           onPress={() => handleCardPress(item._id)}
                         />
@@ -210,7 +210,7 @@ const Home = () => {
                 </View>
               )}
 
-              <View className="flex flex-row items-center justify-between">
+              {/* <View className="flex flex-row items-center justify-between">
                 <Text className="text-xl font-rubik-bold text-black-300">
                   Hot Search
                 </Text>
@@ -246,11 +246,23 @@ const Home = () => {
                   showsHorizontalScrollIndicator={false}
                   contentContainerClassName="flex gap-5 mt-5"
                 />
-              )}
+              )} */}
+
+<View className="flex flex-row items-center justify-between">
 
               <Text className="text-xl font-rubik-bold text-black-300 mt-5">
                 All Products
               </Text>
+              <TouchableOpacity>
+                  <Text
+                    className="text-base font-rubik-bold text-primary-300"
+                    onPress={handleSeeAll}
+                  >
+                    See all
+                  </Text>
+                </TouchableOpacity>
+</View>
+
             </View>
           </View>
         )}
