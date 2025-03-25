@@ -195,6 +195,36 @@ const Checkout = () => {
       </TouchableOpacity>
     </View>
   );
+  const openVnPay = (amount) =>{
+    const orderData = {
+      orderItems: cart.map((item) => ({
+        product: item.product, // product ID
+        name: item.name, // tên sản phẩm
+        image: item.image, // ảnh sản phẩm
+        price: item.price, // giá sản phẩm
+        size: item.size, // kích cỡ
+        color: item.color, // màu sắc
+        quantity: item.quantity, // số lượng
+      })),
+      addressId: selectedAddressId, // ID của địa chỉ đã chọn
+      fullName: fullName, // tên người nhận
+      phone: phone, // số điện thoại
+      location: location, // địa chỉ chi tiết
+      city: city, // thành phố
+      country: country, // quốc gia
+      paymentMethod: paymentMethod, // phương thức thanh toán (COD)
+      totalPrice: totalPrice, // tổng giá trị trước khi giảm
+      couponId: couponId, // mã coupon
+      priceAfterDiscount: priceAfterDiscount, // giá trị sau khi giảm
+      code: "", // nếu cần mã thì thay đổi tại đây
+    };
+
+    const encodedOrderData = encodeURIComponent(JSON.stringify(orderData));
+    // router.navigate(`/vnpay/${amount}`)
+    router.push(`/vnpay/${amount}?orderItems=${encodedOrderData}`);
+
+  }
+
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -373,39 +403,47 @@ const Checkout = () => {
               </Modal>
             </View>
 
-            {/* Payment Method */}
-            <View className="px-4 mt-4">
-              <Text className="text-xl font-bold">Payment Method</Text>
-              <View className="flex flex-row items-center mt-3">
-                <TouchableOpacity
-                  onPress={() => setPaymentMethod("COD")}
-                  className={`bg-gray-200 p-3 rounded-lg flex-1 ${
-                    paymentMethod === "COD" ? "bg-primary-300" : ""
-                  }`}
-                >
-                  <Text className="text-center">COD</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setPaymentMethod("VNPAY")}
-                  className={`bg-gray-200 p-3 rounded-lg flex-1 ml-2 ${
-                    paymentMethod === "VNPAY" ? "bg-primary-300" : ""
-                  }`}
-                >
-                  <Text className="text-center">VNPAY</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+             {/* Payment Method */}
+                        <View className="px-4 mt-4">
+                          <Text className="text-xl font-bold">Payment Method</Text>
+                          <View className="flex flex-row items-center mt-3">
+                            <TouchableOpacity
+                              onPress={() => Alert.alert("Error", "Payment Method not supported yet")}
+                              className={`bg-gray-200 p-3 rounded-lg flex-1 ${
+                                paymentMethod === "COD" ? "bg-primary-300" : ""
+                              }`}
+                            >
+                              <Text  className={`text-center ${paymentMethod==="COD"?"text-white":""}`}>COD</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() => setPaymentMethod("VNPAY")}
+                              className={`bg-gray-200 p-3 rounded-lg flex-1 ml-2 ${
+                                paymentMethod === "VNPAY" ? "bg-primary-300 " : ""
+                              }`}
+                            >
+                              <Text className={`text-center ${paymentMethod==="VNPAY"?"text-white":""}`}>VNPAY</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
           </>
         }
       />
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={handleSubmit}
         className="bg-primary-300 rounded-full p-4 m-4"
       >
         <Text className="text-white text-center text-xl font-bold">
           Confirm Order
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+       <TouchableOpacity
+              onPress={()=>openVnPay(priceAfterDiscount)}
+              className="bg-primary-300 rounded-full p-4 m-4"
+            >
+              <Text className="text-white text-center text-xl font-bold">
+                Confirm
+              </Text>
+            </TouchableOpacity>
     </SafeAreaView>
   );
 };

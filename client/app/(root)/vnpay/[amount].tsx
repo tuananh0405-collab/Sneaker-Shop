@@ -37,7 +37,7 @@ const Test = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount: 100000,
+            amount: Number(amount)*1000,
             bankCode: "",
             language: "vn",
           }),
