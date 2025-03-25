@@ -278,7 +278,7 @@ const CheckoutNow = () => {
 
     const encodedOrderData = encodeURIComponent(JSON.stringify(orderData));
     // router.navigate(`/vnpay/${amount}`)
-    router.push(`/vnpay/${amount}?orderItems=${encodedOrderData}`);
+    router.push(`/vnpay/${amount}?orderItems=${encodedOrderData}&isFromCart=false`);
 
   }
 

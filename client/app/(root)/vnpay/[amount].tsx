@@ -10,7 +10,10 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL } from "@/redux/constant";
 import WebView from "react-native-webview";
 import { useLocalSearchParams, useRouter } from "expo-router"; // Để điều hướng đến trang /order
-import { useCreateOrderNowMutation } from "@/redux/api/orderApiSlice";
+import { useCreateOrderMutation, useCreateOrderNowMutation } from "@/redux/api/orderApiSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { clearCartState } from "@/redux/features/cart/cartSlice";
 
 const Test = () => {
   const [url, setUrl] = useState("");
@@ -21,13 +24,14 @@ const Test = () => {
   const [paymentCode, setPaymentCode] = useState("");
   const router = useRouter(); // Để redirect đến trang /order
 
+  const dispatch = useDispatch<AppDispatch>();
+
   const { amount } = useLocalSearchParams<{ amount?: string }>();
   const { orderItems } = useLocalSearchParams<{ orderItems?: string }>();
+  const { isFromCart } = useLocalSearchParams<{ isFromCart?: string }>();
   const decodeOrderItems = orderItems
     ? JSON.parse(decodeURIComponent(orderItems))
     : [];
-
-  
 
   const handleLink = async () => {
     try {
@@ -37,7 +41,7 @@ const Test = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount: Number(amount)*1000,
+            amount: Number(amount) * 1000,
             bankCode: "",
             language: "vn",
           }),
@@ -56,6 +60,7 @@ const Test = () => {
     }
   };
   const [createOrderNow] = useCreateOrderNowMutation();
+  const [createOrder] = useCreateOrderMutation();
 
   useEffect(() => {
     const updatedOrderData = {
@@ -65,20 +70,44 @@ const Test = () => {
 
     // Nếu bạn cần truyền lại updatedOrderData đến trang sau, bạn có thể mã hóa lại hoặc lưu vào state.
     console.log("Updated Order Data with Payment Code:", updatedOrderData);
-    handleCreateOrder(updatedOrderData)
+    // handleCreateOrderNow(updatedOrderData)
+
+    if (isFromCart === "true") {
+      if (paymentCode === "00") {
+        // Alert.alert("Thanh toán thành công", "Clear Cart ddi");
+        handleCreateOrder(updatedOrderData)
+        dispatch(clearCartState());
+      }
+    } else if (isFromCart === "false") {
+      handleCreateOrderNow(updatedOrderData);
+    }
   }, [paymentCode]);
 
-  const handleCreateOrder = async (orderData) => {
+  const handleCreateOrderNow = async (orderData) => {
     try {
       const response = await createOrderNow(orderData).unwrap();
-      console.log('====================================');
+      console.log("====================================");
       console.log(response);
-      console.log('====================================');
+      console.log("====================================");
       // router.push("/order"); // Điều hướng đến trang đơn hàng
     } catch (error) {
-console.log('====================================');
-console.log(error);
-console.log('====================================');    }
+      console.log("====================================");
+      console.log(error);
+      console.log("====================================");
+    }
+  };
+  const handleCreateOrder = async (orderData) => {
+    try {
+      const response = await createOrder(orderData).unwrap();
+      console.log("====================================");
+      console.log(response);
+      console.log("====================================");
+      // router.push("/order"); // Điều hướng đến trang đơn hàng
+    } catch (error) {
+      console.log("====================================");
+      console.log(error);
+      console.log("====================================");
+    }
   };
 
   const handleRedirect = () => {
