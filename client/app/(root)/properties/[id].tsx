@@ -21,11 +21,13 @@ import { addToCartState } from "@/redux/features/cart/cartSlice";
 import { AppDispatch } from "@/redux/store";
 import { useAddToWishlistMutation } from "@/redux/api/wishlistApiSlice";
 import { addToWishlistState } from "@/redux/features/wishlist/wishlistSlice";
+import { CartItem, WishlistItem } from "@/interface";
 
 const Property = () => {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
   const [quantity, setQuantity] = useState<number>(1); // Lưu số lượng người dùng chọn
   const dispatch = useDispatch<AppDispatch>();
 
@@ -35,6 +37,9 @@ const Property = () => {
   const { data, isLoading, error } = useGetProductQuery(id || "");
   const product = data?.data.product;
 
+  const [selectedImage, setSelectedImage] = useState<string>(
+    product?.images[0] || ""
+  );
   const [addToCart, { isLoading: isAdding }] = useAddToCartMutation(); // sử dụng hook addToCart
   const [addToWishlist, { isLoading: isAddingToWishlist }] =
     useAddToWishlistMutation();
@@ -75,6 +80,15 @@ const Property = () => {
     );
 
     if (selectedVariant) {
+      const selectedProductImage =
+        product?.images[
+          product?.variants.findIndex(
+            (variant) => variant.color === selectedColor
+          )
+        ] || product?.images[0];
+
+      setSelectedImage(selectedProductImage);
+
       // Cấu trúc sản phẩm
       const cartItem: CartItem = {
         product: product._id,
@@ -119,6 +133,14 @@ const Property = () => {
     );
 
     if (selectedVariant) {
+      const selectedProductImage =
+        product?.images[
+          product?.variants.findIndex(
+            (variant) => variant.color === selectedColor
+          )
+        ] || product?.images[0];
+
+      setSelectedImage(selectedProductImage);
       // Cấu trúc sản phẩm
       const wishlistItem: WishlistItem = {
         product: product._id,
@@ -205,8 +227,16 @@ const Property = () => {
         contentContainerClassName="pb-32 bg-white"
       >
         <View className="relative w-full" style={{ height: windowHeight / 2 }}>
-          <Image
+          {/* <Image
             source={{ uri: product?.images?.[0] || images.onboarding }}
+            className="size-full"
+            style={{ height: 450 }}
+            resizeMode="cover"
+          /> */}
+          <Image
+            source={{
+              uri: selectedImage || product?.images?.[0] || images.onboarding,
+            }}
             className="size-full"
             style={{ height: 450 }}
             resizeMode="cover"
@@ -264,9 +294,30 @@ const Property = () => {
               {[
                 ...new Set(product?.variants?.map((variant) => variant.color)),
               ].map((color, index) => (
+                // <TouchableOpacity
+                //   key={index}
+                //   onPress={() => setSelectedColor(color)}
+                //   style={{
+                //     borderWidth: selectedColor === color ? 2 : 1,
+                //     borderColor: selectedColor === color ? "#0061ff" : "#ddd",
+                //     padding: 5,
+                //     borderRadius: 5,
+                //   }}
+                // >
+                //   <Text className="text-black-300">{color}</Text>
+                // </TouchableOpacity>
                 <TouchableOpacity
                   key={index}
-                  onPress={() => setSelectedColor(color)}
+                  onPress={() => {
+                    setSelectedColor(color);
+                    const selectedImage =
+                      product?.images[
+                        product?.variants.findIndex(
+                          (variant) => variant.color === color
+                        )
+                      ] || product?.images[0];
+                    setSelectedImage(selectedImage); // Cập nhật ảnh khi chọn màu
+                  }}
                   style={{
                     borderWidth: selectedColor === color ? 2 : 1,
                     borderColor: selectedColor === color ? "#0061ff" : "#ddd",
