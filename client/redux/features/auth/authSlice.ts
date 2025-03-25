@@ -17,7 +17,7 @@ interface AuthState {
 const initialState: AuthState = {
   user: null,
   loading: false,
-  accessToken:null
+  accessToken:null,
 };
 
 // Hàm load dữ liệu từ AsyncStorage
