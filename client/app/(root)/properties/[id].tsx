@@ -89,11 +89,13 @@ const Property = () => {
 
       setSelectedImage(selectedProductImage);
 
+      console.log(selectedProductImage)
+
       // Cấu trúc sản phẩm
       const cartItem: CartItem = {
         product: product._id,
         name: product.name,
-        image: product.images[0],
+        image: selectedProductImage,
         price: selectedVariant.price,
         size: selectedSize,
         color: selectedColor,
@@ -106,6 +108,7 @@ const Property = () => {
           productId: product._id,
           size: selectedSize,
           color: selectedColor,
+          image: selectedProductImage,
           quantity: quantity,
         }).unwrap();
 
@@ -145,7 +148,7 @@ const Property = () => {
       const wishlistItem: WishlistItem = {
         product: product._id,
         name: product.name,
-        image: product.images[0],
+        image: selectedProductImage,
         price: selectedVariant.price,
         size: selectedSize,
         color: selectedColor,
@@ -156,6 +159,7 @@ const Property = () => {
           productId: product._id,
           size: selectedSize,
           color: selectedColor,
+          image: selectedProductImage,
         }).unwrap();
 
         // Dispatch vào Redux store
@@ -182,11 +186,19 @@ const Property = () => {
     );
 
     if (selectedVariant) {
+      const selectedProductImage =
+        product?.images[
+          product?.variants.findIndex(
+            (variant) => variant.color === selectedColor
+          )
+        ] || product?.images[0];
+
+      setSelectedImage(selectedProductImage);
       const orderItems = [
         {
           product: product._id,
           name: product.name,
-          image: product.images[0],
+          image: selectedProductImage,
           price: selectedVariant.price,
           size: selectedSize,
           color: selectedColor,

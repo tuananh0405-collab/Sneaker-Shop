@@ -28,7 +28,7 @@ export interface AuthUser {
 export interface CartItem {
   product: string;
   name: string;
-  image: string[];
+  image: string;
   price: number;
   size: string;
   color: string;
@@ -37,7 +37,7 @@ export interface CartItem {
 export interface WishlistItem {
   product: string;
   name: string;
-  image: string[];
+  image: string;
   price: number;
   size: string;
   color: string;

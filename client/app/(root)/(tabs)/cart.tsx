@@ -95,15 +95,17 @@ const Cart = () => {
   if (error) {
     return (
       <View className="flex-1 justify-center items-center">
-        <Text className="text-red-500 mb-10">Failed to load cart. Make sure that you are logged in</Text>
+        <Text className="text-red-500 mb-10">
+          Failed to load cart. Make sure that you are logged in
+        </Text>
         {/* <TouchableOpacity className="flex-1 flex flex-row items-center justify-center bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400"> */}
-            <Text
-              className="text-white text-lg text-center font-rubik-bold bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400 px-5"
-              onPress={() => router.replace("/sign-in")}
-            >
-              Log In
-            </Text>
-          {/* </TouchableOpacity> */}
+        <Text
+          className="text-white text-lg text-center font-rubik-bold bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400 px-5"
+          onPress={() => router.replace("/sign-in")}
+        >
+          Log In
+        </Text>
+        {/* </TouchableOpacity> */}
       </View>
     );
   }
@@ -114,19 +116,19 @@ const Cart = () => {
         showsVerticalScrollIndicator={false}
         contentContainerClassName="pb-32 bg-white "
       > */}
-        <View className="relative w-full" style={{ height: windowHeight / 2 }}>
-          <Image
-            source={images.onboarding}
-            className="size-full"
-            style={{ height: 450 }}
-            resizeMode="cover"
-          />
+      <View className="relative w-full" style={{ height: windowHeight / 2 }}>
+        <Image
+          source={images.onboarding}
+          className="size-full"
+          style={{ height: 450 }}
+          resizeMode="cover"
+        />
 
-          <View
-            className="z-50 absolute inset-x-7"
-            style={{ top: Platform.OS === "ios" ? 70 : 20 }}
-          >
-            {/* <View className="flex flex-row items-center w-full justify-between">
+        <View
+          className="z-50 absolute inset-x-7"
+          style={{ top: Platform.OS === "ios" ? 70 : 20 }}
+        >
+          {/* <View className="flex flex-row items-center w-full justify-between">
               <TouchableOpacity
                 onPress={() => router.replace("/profile")}
                 className="flex flex-row bg-primary-200 rounded-full size-11 items-center justify-center"
@@ -143,85 +145,83 @@ const Cart = () => {
                 <Image source={icons.send} className="size-7" />
               </View>
             </View> */}
+        </View>
+      </View>
+      <View className=" px-4">
+        <Text className="text-2xl font-rubik-bold my-5">Shopping Cart</Text>
+
+        {cart?.products.length === 0 ? (
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-lg font-rubik-medium text-gray-500">
+              Your cart is empty
+            </Text>
           </View>
-        </View>
-        <View className=" px-4">
-          <Text className="text-2xl font-rubik-bold my-5">Shopping Cart</Text>
+        ) : (
+          <FlatList
+            data={cart?.products}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View className="flex flex-row items-center justify-between mb-4 border-b border-gray-300 pb-2">
+                <Image
+                  source={{ uri: item.image }}
+                  className="w-16 h-16 rounded-md"
+                />
 
-          {cart?.products.length === 0 ? (
-            <View className="flex-1 justify-center items-center">
-              <Text className="text-lg font-rubik-medium text-gray-500">
-                Your cart is empty
-              </Text>
-            </View>
-          ) : (
-            <FlatList
-              data={cart?.products}
-              keyExtractor={(item) => item.product}
-              renderItem={({ item }) => (
-                <View className="flex flex-row items-center justify-between mb-4 border-b border-gray-300 pb-2">
-                  <Image
-                    source={{ uri: item.image }}
-                    className="w-16 h-16 rounded-md"
-                  />
-
-                  <View className="flex-1 ml-4">
-                    <Text className="text-lg font-rubik-medium">
-                      {item.name}
-                    </Text>
-                    <Text className="text-sm text-gray-500">
-                      Size: {item.size} | Color: {item.color}
-                    </Text>
-                    <Text className="text-primary-300 font-rubik-bold">
-                      ${item.price}
-                    </Text>
-                  </View>
-
-                  <View className="flex flex-row items-center">
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleUpdateQuantity(
-                          item.product,
-                          item.size,
-                          item.color,
-                          item.quantity - 1
-                        )
-                      }
-                      className="px-3 py-2 bg-gray-200 rounded-md"
-                    >
-                      <Text className="text-lg">-</Text>
-                    </TouchableOpacity>
-
-                    <Text className="px-3">{item.quantity}</Text>
-
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleUpdateQuantity(
-                          item.product,
-                          item.size,
-                          item.color,
-                          item.quantity + 1
-                        )
-                      }
-                      className="px-3 py-2 bg-gray-200 rounded-md"
-                    >
-                      <Text className="text-lg">+</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleRemoveItem(item.product, item.size, item.color)
-                      }
-                      className="ml-3"
-                    >
-                      <Image source={icons.trash} className="w-6 h-6" />
-                    </TouchableOpacity>
-                  </View>
+                <View className="flex-1 ml-4">
+                  <Text className="text-lg font-rubik-medium">{item.name}</Text>
+                  <Text className="text-sm text-gray-500">
+                    Size: {item.size} | Color: {item.color}
+                  </Text>
+                  <Text className="text-primary-300 font-rubik-bold">
+                    ${item.price}
+                  </Text>
                 </View>
-              )}
-            />
-          )}
-        </View>
+
+                <View className="flex flex-row items-center">
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleUpdateQuantity(
+                        item.product,
+                        item.size,
+                        item.color,
+                        item.quantity - 1
+                      )
+                    }
+                    className="px-3 py-2 bg-gray-200 rounded-md"
+                  >
+                    <Text className="text-lg">-</Text>
+                  </TouchableOpacity>
+
+                  <Text className="px-3">{item.quantity}</Text>
+
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleUpdateQuantity(
+                        item.product,
+                        item.size,
+                        item.color,
+                        item.quantity + 1
+                      )
+                    }
+                    className="px-3 py-2 bg-gray-200 rounded-md"
+                  >
+                    <Text className="text-lg">+</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleRemoveItem(item.product, item.size, item.color)
+                    }
+                    className="ml-3"
+                  >
+                    <Image source={icons.trash} className="w-6 h-6" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+          />
+        )}
+      </View>
       {/* </ScrollView> */}
 
       <View className="absolute bg-white bottom-20 w-full rounded-t-2xl border-t border-r border-l border-primary-200 p-7">
