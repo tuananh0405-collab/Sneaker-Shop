@@ -11,19 +11,21 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
 import { useGetProductQuery } from "@/redux/api/productApiSlice";
 import { useAddToCartMutation } from "@/redux/api/cartApiSlice"; // sử dụng hook addToCart
 import { addToCartState } from "@/redux/features/cart/cartSlice";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { useAddToWishlistMutation } from "@/redux/api/wishlistApiSlice";
 import { addToWishlistState } from "@/redux/features/wishlist/wishlistSlice";
 import { CartItem, WishlistItem } from "@/interface";
 
 const Property = () => {
+  const userInfo = useSelector((state: RootState) => state.auth.user);
+
   const { id } = useLocalSearchParams<{ id?: string }>();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
@@ -435,7 +437,9 @@ const Property = () => {
               Add to Cart
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
+
+          {userInfo && (
+            <TouchableOpacity
             onPress={handleBuyNow}
             className="flex-1 flex flex-row items-center justify-center bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400"
           >
@@ -443,6 +447,8 @@ const Property = () => {
               Buy Now
             </Text>
           </TouchableOpacity>
+          )}
+          
         </View>
       </View>
     </View>
